@@ -12,7 +12,8 @@ class Or(Logical):
     def __init__(
         self,
         operands: Iterable[Evaluable],
-        symbol: str = "OR"
+        symbol: str = "OR",
+        **kwargs
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()

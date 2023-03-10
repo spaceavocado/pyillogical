@@ -9,7 +9,7 @@ class InvalidNotExpression(Exception):
 class Not(Logical):
     """Not logical unary expression."""
 
-    def __init__(self, operand: Evaluable, symbol: str = "NOT") -> None:
+    def __init__(self, operand: Evaluable, symbol: str = "NOT", **kwargs) -> None:
         super().__init__(
             "NOT",
             symbol,

@@ -53,7 +53,7 @@ LT = Kind("LT")
 LE = Kind("LE")
 IN = Kind("IN")
 NIN = Kind("NIN")
-OVERLAPS = Kind("OVERLAPS")
+OVERLAP = Kind("OVERLAPS")
 PREFIX = Kind("PREFIX")
 SUFFIX = Kind("SUFFIX")
 NONE = Kind("NONE")
@@ -77,36 +77,78 @@ DEFAULT_OPERATOR_MAPPING = {
     PRESENT: "PRESENT",
     IN:      "IN",
     NIN:     "NOT IN",
-    OVERLAPS: "OVERLAP",
+    OVERLAP: "OVERLAP",
     PREFIX:  "PREFIX",
     SUFFIX:  "SUFFIX",
 }
 
+def unary_handler(symbol: str, handler) -> Comparison | Logical:
+    """Factory for a new instance of unary expression."""
+
+    return lambda operands: handler(operands[0], symbol)
+
+def binary_handler(symbol: str, handler) -> Comparison | Logical:
+    """Factory for a new instance of binary expression."""
+
+    return lambda operands: handler(operands[0], operands[1], symbol)
+
+def logical_handler(not_symbol: str, nor_symbol: str):
+    """
+    Factory for a new instance of many expression with dependency on other symbols.
+    """
+
+    def handler(symbol: str, handler) -> Comparison | Logical:
+        return lambda operands: handler(
+            operands,
+            symbol,
+            not_symbol=not_symbol,
+            nor_symbol=nor_symbol
+        )
+
+    return handler
+
 def get_operator_handlers(operator_mapping: dict[Kind, str]) -> dict[Kind, Comparison | Logical]:
     """Create operator handler map"""
 
-    return {
-        # Logical
-        operator_mapping[AND]:      And,
-        operator_mapping[OR]:       Or,
-        operator_mapping[NOR]:      Nor,
-        operator_mapping[XOR]:      Xor,
-        operator_mapping[NOT]:      Not,
-        # Comparison
-        operator_mapping[EQ]:       Eq,
-        operator_mapping[NE]:       Ne,
-        operator_mapping[GT]:       Gt,
-        operator_mapping[GE]:       Ge,
-        operator_mapping[LT]:       Lt,
-        operator_mapping[LE]:       Le,
-        operator_mapping[NONE]:     Non,
-        operator_mapping[PRESENT]:  Present,
-        operator_mapping[IN]:       In,
-        operator_mapping[NIN]:      Nin,
-        operator_mapping[OVERLAPS]: Overlap,
-        operator_mapping[PREFIX]:   Prefix,
-        operator_mapping[SUFFIX]:   Suffix,
+    unary_expressions = {
+        operator_mapping[symbol]:
+            unary_handler(operator_mapping[symbol], handler) for symbol, handler in (
+                (NONE, Non),
+                (PRESENT, Present),
+                (NOT, Not),
+            )
     }
+
+    binary_expressions = {
+        operator_mapping[symbol]:
+            binary_handler(operator_mapping[symbol], handler) for symbol, handler in (
+                (EQ, Eq),
+                (NE, Ne),
+                (GT, Gt),
+                (GE, Ge),
+                (LT, Lt),
+                (LE, Le),
+                (IN, In),
+                (NIN, Nin),
+                (OVERLAP, Overlap),
+                (PREFIX, Prefix),
+                (SUFFIX, Suffix)
+            )
+    }
+
+    many_handler = logical_handler(operator_mapping[NOT], operator_mapping[NOR])
+
+    many_expressions = {
+        operator_mapping[symbol]:
+            many_handler(operator_mapping[symbol], handler) for symbol, handler in (
+                (AND, And),
+                (OR, Or),
+                (NOR, Nor),
+                (XOR, Xor),
+            )
+    }
+
+    return {**unary_expressions, **binary_expressions, **many_expressions}
 
 class ParseOptions(Options):
     """Parsing options."""
@@ -129,11 +171,11 @@ class ParseOptions(Options):
             ignored_path_rx
         )
 
-        self.escaped_operators = (operator for operator in operator_mapping.values())
+        mapping = operator_mapping if operator_mapping else DEFAULT_OPERATOR_MAPPING
+
+        self.escaped_operators = (operator for operator in mapping.values())
         self.operator_handlers: dict[Kind, Comparison | Logical] = \
-            get_operator_handlers(
-                operator_mapping if operator_mapping else DEFAULT_OPERATOR_MAPPING
-            )
+            get_operator_handlers(mapping)
 
 def is_escaped(val: str, escape_character: str) -> bool:
     """Is the value escaped predicate."""
@@ -187,7 +229,7 @@ def create_expression(
     if handler is None:
         raise UnexpectedExpression()
 
-    return handler(*[parse(operand, options) for operand in operands])
+    return handler([parse(operand, options) for operand in operands])
 
 def parse(expression: Expression, options: ParseOptions = ParseOptions()):
     """Parse raw expression into evaluable."""

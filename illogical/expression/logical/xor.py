@@ -14,7 +14,8 @@ class Xor(Logical):
         operands: Iterable[Evaluable],
         symbol: str = "XOR",
         not_symbol: str = "NOT",
-        nor_symbol: str = "NOR"
+        nor_symbol: str = "NOR",
+        **kwargs
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
