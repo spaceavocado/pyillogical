@@ -131,6 +131,7 @@ class TestReference(unittest.TestCase):
             ("0", False),
             (1, True),
             (0, False),
+            ([], False),
         ]
 
         for val, expected in tests:
@@ -204,7 +205,7 @@ class TestReference(unittest.TestCase):
 
         for path, data_type, expected in tests:
             self.assertEqual(evaluate(context, path, data_type)[1], expected)
-     
+
         self.assertEqual(Reference("refA").evaluate(context), 1)
 
     def test_serialize(self):
