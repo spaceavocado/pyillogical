@@ -15,7 +15,7 @@ class Xor(Logical):
         symbol: str = "XOR",
         not_symbol: str = "NOT",
         nor_symbol: str = "NOR",
-        **kwargs
+        **_
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()

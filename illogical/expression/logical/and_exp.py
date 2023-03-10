@@ -13,7 +13,7 @@ class And(Logical):
         self,
         operands: Iterable[Evaluable],
         symbol: str = "AND",
-        **kwargs
+        **_
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()

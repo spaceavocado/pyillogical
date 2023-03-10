@@ -13,7 +13,7 @@ class Or(Logical):
         self,
         operands: Iterable[Evaluable],
         symbol: str = "OR",
-        **kwargs
+        **_
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()

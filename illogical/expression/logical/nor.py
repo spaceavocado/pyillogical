@@ -15,7 +15,7 @@ class Nor(Logical):
         operands: Iterable[Evaluable],
         symbol: str = "NOR",
         not_symbol: str = "NOT",
-        **kwargs
+        **_
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
