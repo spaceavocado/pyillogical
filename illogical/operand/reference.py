@@ -47,6 +47,14 @@ class DataType(Enum):
     STRING = 4
     BOOLEAN = 5
 
+_DATATYPE_KEYS = {
+    "Number": DataType.NUMBER,
+    "Integer": DataType.INTEGER,
+    "Float": DataType.FLOAT,
+    "String": DataType.STRING,
+    "Boolean": DataType.BOOLEAN,
+}
+
 def get_data_type(address: str) -> DataType:
     """Get reference data type from the address, if present."""
 
@@ -54,24 +62,11 @@ def get_data_type(address: str) -> DataType:
     if not match:
         return DataType.UNDEFINED
 
-    data_type = match.group(1)
+    data_type = _DATATYPE_KEYS.get(match.group(1))
+    if data_type is None:
+        return DataType.UNDEFINED
 
-    if data_type == "Number":
-        return DataType.NUMBER
-
-    if data_type == "Integer":
-        return DataType.INTEGER
-
-    if data_type == "Float":
-        return DataType.FLOAT
-
-    if data_type == "String":
-        return DataType.STRING
-
-    if data_type == "Boolean":
-        return DataType.BOOLEAN
-
-    return DataType.UNDEFINED
+    return data_type
 
 def trim_data_type(address: str) -> str:
     """Trim data type annotation from the reference address."""
@@ -172,13 +167,15 @@ def to_boolean(val):
         return val
 
     if isinstance(val, (int, float)):
-        return True if val == 1 else False
+        return val == 1
 
     if isinstance(val, str):
         if val.lower() in ("true", "1"):
             return True
         if val.lower() in ("false", "0"):
             return False
+
+    return False
 
 def context_lookup(context: Context, path: str) -> Tuple[str, Primitive | None]:
     """Try to get a value from the context object based on the reference path."""
@@ -196,6 +193,13 @@ def context_lookup(context: Context, path: str) -> Tuple[str, Primitive | None]:
 
     return (path, context.get(path))
 
+_DATATYPE_HANDLERS = {
+    DataType.NUMBER: to_number,
+    DataType.INTEGER: to_int,
+    DataType.FLOAT: to_float,
+    DataType.STRING: to_string,
+    DataType.BOOLEAN: to_boolean,
+}
 
 def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Primitive]:
     """
@@ -208,20 +212,9 @@ def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Pri
     if value is None:
         return (resolved_path, None)
 
-    if data_type == DataType.NUMBER:
-        return (resolved_path, to_number(value))
-
-    if data_type == DataType.INTEGER:
-        return (resolved_path, to_int(value))
-
-    if data_type == DataType.FLOAT:
-        return (resolved_path, to_float(value))
-
-    if data_type == DataType.BOOLEAN:
-        return (resolved_path, to_boolean(value))
-
-    if data_type == DataType.STRING:
-        return (resolved_path, to_string(value))
+    handler = _DATATYPE_HANDLERS.get(data_type)
+    if handler:
+        return (resolved_path, handler(value))
 
     return (resolved_path, value)
 

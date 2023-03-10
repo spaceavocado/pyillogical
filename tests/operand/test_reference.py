@@ -131,6 +131,7 @@ class TestReference(unittest.TestCase):
             ("0", False),
             (1, True),
             (0, False),
+            ([], False),
         ]
 
         for val, expected in tests:
