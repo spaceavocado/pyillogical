@@ -1,3 +1,5 @@
+# pylint: disable=locally-disabled, duplicate-code
+
 """Negative or logical expression."""
 
 from typing import Iterable
@@ -16,7 +18,7 @@ class Nor(Logical):
 
         super().__init__(
             "NOR",
-            KIND,
+            KIND, 
             *operands
         )
 

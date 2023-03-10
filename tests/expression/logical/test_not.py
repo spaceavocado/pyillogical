@@ -17,7 +17,7 @@ class TestNot(unittest.TestCase):
         for operand, expected in tests:
             operand = Not(operand)
             self.assertIs(operand.evaluate({}), expected)
-            
+ 
         with self.assertRaises(InvalidNotExpression):
             Not(Value("val")).evaluate({})
 

@@ -1,3 +1,5 @@
+# pylint: disable=locally-disabled, duplicate-code
+
 """Or logical expression."""
 
 from typing import Iterable
