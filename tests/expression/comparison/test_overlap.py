@@ -6,7 +6,7 @@ from illogical.expression.comparison.overlap import Overlap
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
-class TestEq(unittest.TestCase):
+class TestOverlap(unittest.TestCase):
     def test_evaluate(self):
         tests = [
             # Truthy

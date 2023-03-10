@@ -7,7 +7,7 @@ from illogical.expression.comparison.comparison import Comparison
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
-class TestEq(unittest.TestCase):
+class TestComparison(unittest.TestCase):
     def test_serialize(self):
         tests = [
             ("==", [Value(1), Value(2)], "(1 == 2)"),

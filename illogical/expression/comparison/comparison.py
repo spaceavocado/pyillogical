@@ -1,8 +1,7 @@
 """Comparison expression."""
 
-from contextvars import Context
 from typing import Iterable, Callable
-from illogical.evaluable import Evaluated, Kind, Evaluable, is_evaluable
+from illogical.evaluable import Context, Evaluated, Kind, Evaluable, is_evaluable
 
 class Comparison(Evaluable):
     """Comparison expression."""

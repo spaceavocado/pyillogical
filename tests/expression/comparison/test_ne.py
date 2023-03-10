@@ -6,7 +6,7 @@ from illogical.expression.comparison.ne import Ne
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
-class TestEq(unittest.TestCase):
+class TestNe(unittest.TestCase):
     def test_evaluate(self):
         tests = [
             # Same types
