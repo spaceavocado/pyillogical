@@ -1,7 +1,7 @@
 """Expression parser."""
 
 from typing import Iterable
-from illogical.evaluable import Evaluable, Evaluated, Expression, Kind, is_primitive
+from illogical.evaluable import Evaluated, Expression, Kind, is_primitive
 from illogical.expression.comparison.comparison import Comparison
 from illogical.expression.logical.logical import Logical
 from illogical.operand.collection import Collection
@@ -26,6 +26,7 @@ from illogical.expression.comparison.suffix import KIND as SUFFIX, Suffix
 from illogical.expression.comparison.none import KIND as NONE, Non
 from illogical.expression.comparison.present import KIND as PRESENT, Present
 from illogical.operand.value import Value
+from illogical.options import Options
 
 class UnexpectedExpressionInput(Exception):
     """Unexpected expression input."""
@@ -87,6 +88,32 @@ def get_operator_handlers(operator_mapping: dict[Kind, str]) -> dict[Kind, Compa
         operator_mapping[SUFFIX]:   Suffix,
     }
 
+class ParseOptions(Options):
+    """Parsing options."""
+
+    def __init__(
+        self,
+        operator_mapping: OperatorMapping = None,
+        reference_from: SerializeFrom = default_serialize_from,
+        reference_to: SerializeTo = default_serialize_to,
+        escape_character: str = "\\",
+        ignored_paths: IgnoredPaths = None,
+        ignored_path_rx: IgnoredPathsRx = None,
+    ) -> None:
+        super().__init__(
+            operator_mapping,
+            reference_from,
+            reference_to,
+            escape_character,
+            ignored_paths,
+            ignored_path_rx
+        )
+
+        self.escaped_operators = (operator for operator in operator_mapping.values())
+        self.operator_handlers: dict[Kind, Comparison | Logical] = \
+            get_operator_handlers(
+                operator_mapping if operator_mapping else DEFAULT_OPERATOR_MAPPING
+            )
 
 def is_escaped(val: str, escape_character: str) -> bool:
     """Is the value escaped predicate."""
@@ -101,34 +128,26 @@ def to_reference_address(reference, reference_from: SerializeFrom) -> str | None
 
     return None
 
-def create_operand(
-    val,
-    operator_handlers: dict[Kind, Comparison | Logical],
-    reference_from: SerializeFrom = default_serialize_from,
-    escape_character: str = "\\",
-    ignored_paths: IgnoredPaths = None,
-    ignored_path_rx: IgnoredPathsRx = None,
-):
+def create_operand(val, options: ParseOptions) -> Reference | Value | Collection:
     """Create operand from the raw input."""
 
     if isinstance(val, (list, set, tuple)):
         if len(val) == 0:
             raise UnexpectedOperand()
 
-        return Collection([
-            parse_expression(
-                operand,
-                operator_handlers,
-                reference_from,
-                escape_character,
-                ignored_paths,
-                ignored_path_rx
-            ) for operand in val
-        ])
+        return Collection(
+            [parse(operand, options) for operand in val],
+            options.escape_character, options.escaped_operators
+        )
 
-    address = to_reference_address(val, reference_from)
+    address = to_reference_address(val, options.reference_from)
     if address:
-        return Reference(address)
+        return Reference(
+            address,
+            options.reference_to,
+            options.ignored_paths,
+            options.ignored_path_rx
+        )
 
     if not is_primitive(val):
         raise UnexpectedOperand()
@@ -137,96 +156,32 @@ def create_operand(
 
 def create_expression(
     expression: Iterable[Evaluated],
-    operator_handlers: dict[Kind, Comparison | Logical],
-    reference_from: SerializeFrom = default_serialize_from,
-    escape_character: str = "\\",
-    ignored_paths: IgnoredPaths = None,
-    ignored_path_rx: IgnoredPathsRx = None,
+    options: ParseOptions
 ) -> Comparison | Logical:
     """Create an logical or comparison expression from the raw input."""
 
     operator = expression[0]
     operands = expression[1:]
 
-    handler = operator_handlers.get(operator)
+    handler = options.operator_handlers.get(operator)
     if handler is None:
         raise UnexpectedExpression()
 
-    return handler(*[
-        parse_expression(
-            operand,
-            operator_handlers,
-            reference_from,
-            escape_character,
-            ignored_paths,
-            ignored_path_rx
-        ) for operand in operands
-    ])
+    return handler(*[parse(operand, options) for operand in operands])
 
-def parse_expression(
-    expression: Expression,
-    operator_handlers: dict[Kind, Comparison | Logical],
-    reference_from: SerializeFrom = default_serialize_from,
-    escape_character: str = "\\",
-    ignored_paths: IgnoredPaths = None,
-    ignored_path_rx: IgnoredPathsRx = None,
-):
+def parse(expression: Expression, options: ParseOptions = ParseOptions()):
     """Parse raw expression into evaluable."""
 
     if expression is None:
         raise UnexpectedExpressionInput()
 
-    def operand(exp):
-        return create_operand(
-            exp,
-            operator_handlers,
-            reference_from,
-            escape_character,
-            ignored_paths,
-            ignored_path_rx
-        )
-
     if not isinstance(expression, (list, set, tuple)):
-        return operand(expression)
+        return create_operand(expression, options)
 
     if len(expression) < 2:
-        return operand(expression)
+        return create_operand(expression, options)
 
-    if is_escaped(expression[0], escape_character):
-        return operand([expression[0][1:], *expression[1:]])
+    if is_escaped(expression[0], options.escape_character):
+        return create_operand([expression[0][1:], *expression[1:]], options)
 
-    evaluable = create_expression(
-        expression,
-        operator_handlers,
-        reference_from,
-        escape_character,
-        ignored_paths,
-        ignored_path_rx
-    )
-
-    return evaluable
-
-def parse(
-    expression: Expression,
-    operator_mapping: OperatorMapping = None,
-    reference_from: SerializeFrom = default_serialize_from,
-    reference_to: SerializeTo = default_serialize_to,
-    escape_character: str = "\\",
-    ignored_paths: IgnoredPaths = None,
-    ignored_path_rx: IgnoredPathsRx = None,
-) -> Evaluable:
-    """Parse a raw expression into evaluable."""
-
-    operator_handlers: dict[Kind, Comparison | Logical] = \
-        get_operator_handlers(
-            operator_mapping if operator_mapping else DEFAULT_OPERATOR_MAPPING
-        )
-
-    return parse_expression(
-        expression,
-        operator_handlers,
-        reference_from,
-        escape_character,
-        ignored_paths,
-        ignored_path_rx
-    )
+    return create_expression(expression, options)
