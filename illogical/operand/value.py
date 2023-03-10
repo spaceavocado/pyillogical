@@ -22,4 +22,4 @@ class Value(Evaluable):
         return self.val
 
     def __str__(self):
-        return f'"{self.val}"' if isinstance(self.val, str) else str(self.val)
+        return f'"{self.val}"' if isinstance(self.val, str) else str(self.val).lower()

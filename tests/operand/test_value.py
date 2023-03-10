@@ -49,8 +49,8 @@ class TestValue(unittest.TestCase):
             (1, "1"),
             (1.1, "1.1"),
             ("val", '"val"'),
-            (True, "True"),
-            (False, "False"),
+            (True, "true"),
+            (False, "false"),
         ]
 
         for arg, expected in tests:

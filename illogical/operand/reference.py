@@ -269,7 +269,7 @@ class Reference(Evaluable):
         return self
 
 
-    def serialize(self) -> str:
+    def serialize(self):
         path = self.path
 
         if self.data_type is not DataType.UNDEFINED:
@@ -277,5 +277,5 @@ class Reference(Evaluable):
 
         return self.serialize_to(path)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return f"{{{self.address}}}"
