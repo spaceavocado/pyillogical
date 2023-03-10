@@ -3,24 +3,29 @@
 """Negative or logical expression."""
 
 from typing import Iterable
-from illogical.evaluable import Context, Evaluable, Evaluated, Kind
+from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
 from illogical.expression.logical.not_exp import Not
-
-KIND = Kind('Nor')
 
 class Nor(Logical):
     """Negative or logical expression."""
 
-    def __init__(self, *operands: Iterable[Evaluable]) -> None:
+    def __init__(
+        self,
+        operands: Iterable[Evaluable],
+        symbol: str = "NOR",
+        not_symbol: str = "NOT"
+    ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
         super().__init__(
             "NOR",
-            KIND, 
+            symbol,
             *operands
         )
+
+        self.not_symbol = not_symbol
 
     def evaluate(self, context: Context) -> bool:
         for operand in self.operands:
@@ -46,6 +51,6 @@ class Nor(Logical):
             return True
 
         if len(simplified) == 1:
-            return Not(simplified[0])
+            return Not(simplified[0], self.not_symbol)
 
-        return Nor(*simplified)
+        return Nor(simplified, self.symbol, self.not_symbol)

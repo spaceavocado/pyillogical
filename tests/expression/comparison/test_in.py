@@ -2,7 +2,7 @@
 
 import unittest
 
-from illogical.expression.comparison.includes import In
+from illogical.expression.comparison.in_exp import In
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 

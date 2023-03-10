@@ -2,18 +2,16 @@
 
 """Overlap comparison expression."""
 
-from illogical.evaluable import Evaluable, Evaluated, Kind
+from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
-
-KIND = Kind('Overlap')
 
 class Overlap(Comparison):
     """Overlap comparison expression."""
 
-    def __init__(self, left: Evaluable, right: Evaluable) -> None:
+    def __init__(self, left: Evaluable, right: Evaluable, symbol = "OVERLAP") -> None:
         super().__init__(
             "<overlaps>",
-            KIND,
+            symbol,
             self.compare,
             left,
             right

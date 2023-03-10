@@ -1,17 +1,15 @@
 """In comparison expression."""
 
-from illogical.evaluable import Evaluable, Evaluated, Kind
+from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
-
-KIND = Kind('In')
 
 class In(Comparison):
     """In comparison expression."""
 
-    def __init__(self, left: Evaluable, right: Evaluable) -> None:
+    def __init__(self, left: Evaluable, right: Evaluable, symbol = "IN") -> None:
         super().__init__(
             "<in>",
-            KIND,
+            symbol,
             self.compare,
             left,
             right

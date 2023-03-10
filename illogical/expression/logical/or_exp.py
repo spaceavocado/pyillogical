@@ -3,21 +3,23 @@
 """Or logical expression."""
 
 from typing import Iterable
-from illogical.evaluable import Context, Evaluable, Evaluated, Kind
+from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
-
-KIND = Kind('Or')
 
 class Or(Logical):
     """Or logical expression."""
 
-    def __init__(self, *operands: Iterable[Evaluable]) -> None:
+    def __init__(
+        self,
+        operands: Iterable[Evaluable],
+        symbol: str = "OR"
+    ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
         super().__init__(
             "OR",
-            KIND,
+            symbol,
             *operands
         )
 
@@ -47,4 +49,4 @@ class Or(Logical):
         if len(simplified) == 1:
             return simplified[0]
 
-        return Or(*simplified)
+        return Or(simplified, self.symbol)

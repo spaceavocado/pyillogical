@@ -2,18 +2,16 @@
 
 """Not in comparison expression."""
 
-from illogical.evaluable import Evaluable, Evaluated, Kind
+from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
-
-KIND = Kind('Not in')
 
 class Nin(Comparison):
     """Not in comparison expression."""
 
-    def __init__(self, left: Evaluable, right: Evaluable) -> None:
+    def __init__(self, left: Evaluable, right: Evaluable, symbol = "NOT IN") -> None:
         super().__init__(
             "<not in>",
-            KIND,
+            symbol,
             self.compare,
             left,
             right

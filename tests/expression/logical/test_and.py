@@ -17,7 +17,7 @@ class TestAnd(unittest.TestCase):
 
         for operands in tests:
             with self.assertRaises(InvalidLogicalExpression):
-                And(*operands)
+                And(operands)
 
     def test_evaluate(self):
         tests = [
@@ -31,7 +31,7 @@ class TestAnd(unittest.TestCase):
         ]
 
         for operands, expected in tests:
-            operand = And(*operands)
+            operand = And(operands)
             self.assertIs(operand.evaluate({}), expected)
 
     def test_simplify(self):
@@ -42,12 +42,12 @@ class TestAnd(unittest.TestCase):
             ([Reference("Missing"), Value(True)], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                And(Reference("Missing"), Reference("Missing"))
+                And([Reference("Missing"), Reference("Missing")])
             ),
         ]
 
         for operands, expected in tests:
-            operand = And(*operands)
+            operand = And(operands)
             simplified = operand.simplify({ "RefA": True })
 
             if is_evaluable(expected):

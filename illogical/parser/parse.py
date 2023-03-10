@@ -7,24 +7,24 @@ from illogical.expression.logical.logical import Logical
 from illogical.operand.collection import Collection
 from illogical.operand.reference import IgnoredPaths, IgnoredPathsRx, Reference, SerializeFrom, \
     SerializeTo, default_serialize_from, default_serialize_to
-from illogical.expression.logical.and_exp import KIND as AND, And
-from illogical.expression.logical.or_exp import KIND as OR, Or
-from illogical.expression.logical.nor import KIND as NOR, Nor
-from illogical.expression.logical.xor import KIND as XOR, Xor
-from illogical.expression.logical.not_exp import KIND as NOT, Not
-from illogical.expression.comparison.eq import KIND as EQ, Eq
-from illogical.expression.comparison.ne import KIND as NE, Ne
-from illogical.expression.comparison.gt import KIND as GT, Gt
-from illogical.expression.comparison.ge import KIND as GE, Ge
-from illogical.expression.comparison.lt import KIND as LT, Lt
-from illogical.expression.comparison.le import KIND as LE, Le
-from illogical.expression.comparison.includes import KIND as IN, In
-from illogical.expression.comparison.nin import KIND as NIN, Nin
-from illogical.expression.comparison.overlap import KIND as OVERLAPS, Overlap
-from illogical.expression.comparison.prefix import KIND as PREFIX, Prefix
-from illogical.expression.comparison.suffix import KIND as SUFFIX, Suffix
-from illogical.expression.comparison.none import KIND as NONE, Non
-from illogical.expression.comparison.present import KIND as PRESENT, Present
+from illogical.expression.logical.and_exp import And
+from illogical.expression.logical.or_exp import Or
+from illogical.expression.logical.nor import Nor
+from illogical.expression.logical.xor import Xor
+from illogical.expression.logical.not_exp import Not
+from illogical.expression.comparison.eq import Eq
+from illogical.expression.comparison.ne import Ne
+from illogical.expression.comparison.gt import Gt
+from illogical.expression.comparison.ge import Ge
+from illogical.expression.comparison.lt import Lt
+from illogical.expression.comparison.le import Le
+from illogical.expression.comparison.in_exp import In
+from illogical.expression.comparison.nin import Nin
+from illogical.expression.comparison.overlap import Overlap
+from illogical.expression.comparison.prefix import Prefix
+from illogical.expression.comparison.suffix import Suffix
+from illogical.expression.comparison.none import Non
+from illogical.expression.comparison.present import Present
 from illogical.operand.value import Value
 from illogical.options import Options
 
@@ -38,6 +38,26 @@ class UnexpectedOperand(Exception):
     """Invalid undefined operand"."""
 
 OperatorMapping = dict[Kind, str]
+
+# Expression identifiers
+AND = Kind("AND")
+OR = Kind("OR")
+NOR = Kind("NOR")
+XOR = Kind("XOR")
+NOT = Kind("NOT")
+EQ = Kind("EQ")
+NE = Kind("NE")
+GT = Kind("GT")
+GE = Kind("GE")
+LT = Kind("LT")
+LE = Kind("LE")
+IN = Kind("IN")
+NIN = Kind("NIN")
+OVERLAPS = Kind("OVERLAPS")
+PREFIX = Kind("PREFIX")
+SUFFIX = Kind("SUFFIX")
+NONE = Kind("NONE")
+PRESENT = Kind("PRESENT")
 
 DEFAULT_OPERATOR_MAPPING = {
     # Logical

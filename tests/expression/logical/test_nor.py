@@ -18,7 +18,7 @@ class TestNor(unittest.TestCase):
 
         for operands in tests:
             with self.assertRaises(InvalidLogicalExpression):
-                Nor(*operands)
+                Nor(operands)
 
     def test_evaluate(self):
         tests = [
@@ -32,7 +32,7 @@ class TestNor(unittest.TestCase):
         ]
 
         for operands, expected in tests:
-            operand = Nor(*operands)
+            operand = Nor(operands)
             self.assertIs(operand.evaluate({}), expected)
 
     def test_simplify(self):
@@ -45,12 +45,12 @@ class TestNor(unittest.TestCase):
             ([Reference("Missing"), Value(False)], Not(Reference("Missing"))),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Nor(Reference("Missing"), Reference("Missing"))
+                Nor([Reference("Missing"), Reference("Missing")])
             ),
         ]
 
         for operands, expected in tests:
-            operand = Nor(*operands)
+            operand = Nor(operands)
             simplified = operand.simplify({ "RefA": True })
 
             if is_evaluable(expected):

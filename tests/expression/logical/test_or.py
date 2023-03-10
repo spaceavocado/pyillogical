@@ -17,7 +17,7 @@ class TestOr(unittest.TestCase):
 
         for operands in tests:
             with self.assertRaises(InvalidLogicalExpression):
-                Or(*operands)
+                Or(operands)
 
     def test_evaluate(self):
         tests = [
@@ -30,7 +30,7 @@ class TestOr(unittest.TestCase):
         ]
 
         for operands, expected in tests:
-            operand = Or(*operands)
+            operand = Or(operands)
             self.assertIs(operand.evaluate({}), expected)
 
     def test_simplify(self):
@@ -42,12 +42,12 @@ class TestOr(unittest.TestCase):
             ([Reference("Missing"), Value(False)], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Or(Reference("Missing"), Reference("Missing"))
+                Or([Reference("Missing"), Reference("Missing")])
             ),
         ]
 
         for operands, expected in tests:
-            operand = Or(*operands)
+            operand = Or(operands)
             simplified = operand.simplify({ "RefA": True })
 
             if is_evaluable(expected):

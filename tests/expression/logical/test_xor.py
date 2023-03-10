@@ -19,7 +19,7 @@ class TestXor(unittest.TestCase):
 
         for operands in tests:
             with self.assertRaises(InvalidLogicalExpression):
-                Xor(*operands)
+                Xor(operands)
 
     def test_evaluate(self):
         tests = [
@@ -34,7 +34,7 @@ class TestXor(unittest.TestCase):
         ]
 
         for operands, expected in tests:
-            operand = Xor(*operands)
+            operand = Xor(operands)
             self.assertIs(operand.evaluate({}), expected)
 
     def test_simplify(self):
@@ -43,7 +43,7 @@ class TestXor(unittest.TestCase):
             ([Reference("RefA"), Value(True)], False),
             (
                 [Reference("Missing"), Value(True), Reference("Missing")],
-                Nor(Reference("Missing"), Reference("Missing"))
+                Nor([Reference("Missing"), Reference("Missing")])
             ),
             (
                 [Reference("Missing"), Value(True), Value(False)],
@@ -53,12 +53,12 @@ class TestXor(unittest.TestCase):
             ([Value(False), Reference("Missing")], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Xor(Reference("Missing"), Reference("Missing"))
+                Xor([Reference("Missing"), Reference("Missing")])
             ),
         ]
 
         for operands, expected in tests:
-            operand = Xor(*operands)
+            operand = Xor(operands)
             simplified = operand.simplify({ "RefA": True })
 
             if is_evaluable(expected):

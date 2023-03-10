@@ -1,9 +1,7 @@
 """Not logical unary expression."""
 
-from illogical.evaluable import Context, Evaluable, Evaluated, Kind
+from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import Logical
-
-KIND = Kind('Not')
 
 class InvalidNotExpression(Exception):
     """Logical NOT expression's operand must be evaluated to boolean value."""
@@ -11,10 +9,10 @@ class InvalidNotExpression(Exception):
 class Not(Logical):
     """Not logical unary expression."""
 
-    def __init__(self, operand: Evaluable) -> None:
+    def __init__(self, operand: Evaluable, symbol: str = "NOT") -> None:
         super().__init__(
             "NOT",
-            KIND,
+            symbol,
             operand
         )
 

@@ -1,7 +1,7 @@
 """Logical expression."""
 
 from typing import Iterable
-from illogical.evaluable import Kind, Evaluable
+from illogical.evaluable import Evaluable
 
 class InvalidLogicalExpression(Exception):
     """Non unary logical expression must have at least 2 operands"""
@@ -12,15 +12,15 @@ class Logical(Evaluable):
     def __init__(
         self,
         operator: str,
-        kind: Kind,
+        symbol: str,
         *operands: Iterable[Evaluable]
     ) -> None:
         self.operator = operator
-        self.kind = kind
+        self.symbol = symbol
         self.operands = operands
 
     def serialize(self):
-        return [self.kind, *[operand.serialize() for operand in self.operands]]
+        return [self.symbol, *[operand.serialize() for operand in self.operands]]
 
     def __str__(self):
         if len(self.operands) == 1:
