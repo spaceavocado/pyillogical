@@ -1,3 +1,5 @@
+# pylint: disable=locally-disabled, duplicate-code
+
 """Not in comparison expression."""
 
 from illogical.evaluable import Evaluable, Evaluated, Kind
