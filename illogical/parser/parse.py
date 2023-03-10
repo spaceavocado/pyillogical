@@ -1,3 +1,5 @@
+# pylint: disable=locally-disabled, too-few-public-methods
+
 """Expression parser."""
 
 from typing import Iterable
@@ -26,7 +28,7 @@ from illogical.expression.comparison.suffix import Suffix
 from illogical.expression.comparison.none import Non
 from illogical.expression.comparison.present import Present
 from illogical.operand.value import Value
-from illogical.options import Options
+from illogical.options import OperatorMapping, Options
 
 class UnexpectedExpressionInput(Exception):
     """Unexpected expression input."""
@@ -36,8 +38,6 @@ class UnexpectedExpression(Exception):
 
 class UnexpectedOperand(Exception):
     """Invalid undefined operand"."""
-
-OperatorMapping = dict[Kind, str]
 
 # Expression identifiers
 AND = Kind("AND")

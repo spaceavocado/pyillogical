@@ -1,6 +1,12 @@
-from illogical.operand.reference import IgnoredPaths, IgnoredPathsRx, SerializeFrom, SerializeTo, default_serialize_from, default_serialize_to
-from illogical.parser.parse import OperatorMapping
+# pylint: disable=locally-disabled, too-few-public-methods
 
+"""Engine options."""
+
+from illogical.evaluable import Kind
+from illogical.operand.reference import IgnoredPaths, IgnoredPathsRx, SerializeFrom, \
+    SerializeTo, default_serialize_from, default_serialize_to
+
+OperatorMapping = dict[Kind, str]
 
 class Options:
     """Illogical engine options."""

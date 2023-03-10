@@ -15,7 +15,7 @@ def is_primitive(subject) -> bool:
     Is subject a primitive value predicate.
     """
 
-    return isinstance(subject, (str, int, float, bool, None))
+    return subject is None or isinstance(subject, (str, int, float, bool))
 
 def is_evaluable(subject) -> bool:
     """
