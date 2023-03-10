@@ -10,6 +10,13 @@ Expression = Evaluated
 
 Kind = NewType('Kind', str)
 
+def is_primitive(subject) -> bool:
+    """
+    Is subject a primitive value predicate.
+    """
+
+    return isinstance(subject, (str, int, float, bool, None))
+
 def is_evaluable(subject) -> bool:
     """
     Is subject a evaluable object predicate.
