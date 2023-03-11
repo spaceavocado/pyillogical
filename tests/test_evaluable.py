@@ -5,7 +5,7 @@ from illogical.evaluable import flatten_context, is_primitive, is_evaluable
 from illogical.expression.logical.and_exp import And
 from illogical.operand.value import Value
 
-class TestReference(unittest.TestCase):
+class TestEvaluable(unittest.TestCase):
     def test_is_primitive(self):
         tests = [
             (None, True),

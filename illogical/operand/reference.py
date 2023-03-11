@@ -220,7 +220,7 @@ def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Pri
 def default_serialize_from(address: str) -> str:
     """Default deserialization."""
 
-    return address[1:] if len(address) > 1 and address.startswith("$") else ""
+    return address[1:] if len(address) > 1 and address.startswith("$") else None
 
 def default_serialize_to(operand: str) -> str:
     """Default serialization."""

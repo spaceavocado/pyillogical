@@ -81,6 +81,8 @@ DEFAULT_OPERATOR_MAPPING = {
     SUFFIX:  "SUFFIX",
 }
 
+DEFAULT_ESCAPE_CHARACTER = "\\"
+
 OperatorMapping = dict[Kind, str]
 """
 Mapping of the operators. The key is unique operator symbol, and the value is the key used to
@@ -203,18 +205,15 @@ class Options:
         operator_mapping: OperatorMapping = None,
         reference_from: SerializeFrom = default_serialize_from,
         reference_to: SerializeTo = default_serialize_to,
-        escape_character: str = "\\",
+        escape_character: str = DEFAULT_ESCAPE_CHARACTER,
         ignored_paths: IgnoredPaths = None,
         ignored_path_rx: IgnoredPathsRx = None,
     ) -> None:
-        super().__init__(
-            operator_mapping,
-            reference_from,
-            reference_to,
-            escape_character,
-            ignored_paths,
-            ignored_path_rx
-        )
+        self.reference_from = reference_from
+        self.reference_to = reference_to
+        self.escape_character = escape_character
+        self.ignored_paths = ignored_paths
+        self.ignored_path_rx = ignored_path_rx
 
         mapping = operator_mapping if operator_mapping else DEFAULT_OPERATOR_MAPPING
 
@@ -288,7 +287,10 @@ def parse(expression: Expression, options: Options = Options()) -> Evaluable:
     if len(expression) < 2:
         return create_operand(expression, options)
 
-    if is_escaped(expression[0], options.escape_character):
+    if isinstance(expression[0], str) and is_escaped(expression[0], options.escape_character):
         return create_operand([expression[0][1:], *expression[1:]], options)
 
-    return create_expression(expression, options)
+    try:
+        return create_expression(expression, options)
+    except UnexpectedExpression:
+        return create_operand(expression, options)

@@ -8,8 +8,8 @@ from illogical.operand.reference import DataType, Reference, context_lookup, def
 class TestReference(unittest.TestCase):
     def test_default_serialize_from(self):
         tests = [
-            ("", ""),
-            ("ref", ""),
+            ("", None),
+            ("ref", None),
             ("$ref", "ref"),
         ]
 
