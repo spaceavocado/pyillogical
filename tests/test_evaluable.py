@@ -1,9 +1,42 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import flatten_context
+from illogical.evaluable import flatten_context, is_primitive, is_evaluable
+from illogical.expression.logical.and_exp import And
+from illogical.operand.value import Value
 
 class TestReference(unittest.TestCase):
+    def test_is_primitive(self):
+        tests = [
+            (None, True),
+            ("val", True),
+            (1, True),
+            (1.1, True),
+            (True, True),
+            (False, True),
+            ([], False),
+            ((), False),
+            ({}, False),
+        ]
+
+        for subject, expected in tests:
+            self.assertEqual(is_primitive(subject), expected)
+
+    def test_is_evaluable(self):
+        tests = [
+            (Value(1), True),
+            (And([Value(1), Value(1)]), True),
+            (None, False),
+            ("val", False),
+            (1, False),
+            (1.1, False),
+            (True, False),
+            (False, False),
+        ]
+
+        for subject, expected in tests:
+            self.assertEqual(is_evaluable(subject), expected)
+
     def test_flatten_context(self):
         tests = [
             (

@@ -27,8 +27,6 @@ def is_evaluable(subject) -> bool:
 class Evaluable(Protocol):
     """Evaluable expression."""
 
-    kind: Kind
-
     def evaluate(self, context: Context) -> Evaluated:
         """Evaluate in the given context."""
 

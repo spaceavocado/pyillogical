@@ -3,9 +3,7 @@
 import re
 from enum import Enum
 from typing import Callable, Iterable, Tuple
-from illogical.evaluable import Context, Kind, Primitive, Evaluable
-
-KIND = Kind('reference')
+from illogical.evaluable import Context, Primitive, Evaluable
 
 _DATA_TYPE_RX = r'^.+\.\(([A-Z][a-z]+)\)$'
 _DATA_TYPE_TRIM_RX = r'.\(([A-Z][a-z]+)\)$'
@@ -231,8 +229,6 @@ def default_serialize_to(operand: str) -> str:
 
 class Reference(Evaluable):
     """Reference operand."""
-
-    kind: KIND
 
     def __init__(
         self,

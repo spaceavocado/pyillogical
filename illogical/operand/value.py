@@ -1,13 +1,9 @@
 """Plain value operand."""
 
-from illogical.evaluable import Kind, Primitive, Evaluable
-
-KIND = Kind('value')
+from illogical.evaluable import Primitive, Evaluable
 
 class Value(Evaluable):
     """Value operand."""
-
-    kind = KIND
 
     def __init__(self, val: Primitive):
         self.val = val

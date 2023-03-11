@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "illogical"
 version = "1.0.0"
-description = "A micro conditional go engine used to parse the raw logical and comparison expressions, evaluate the expression in the given data context, and provide access to a text form of the given expressions."
+description = "A micro conditional engine used to parse raw logical and comparison expressions, evaluate the expression in the given data context, and provide access to a text form of the given expressions."
 readme = "README.md"
 authors = [{ name = "David Horak", email = "info@davidhorak.com" }]
 license = { file = "LICENSE.md", content-type="text/markdown" }
