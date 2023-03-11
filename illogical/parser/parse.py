@@ -157,45 +157,42 @@ def logical_handler(not_symbol: str, nor_symbol: str):
 def get_operator_handlers(operator_mapping: OperatorMapping) -> dict[Kind, Comparison | Logical]:
     """Create operator handler map"""
 
-    unary_expressions = {
-        operator_mapping[symbol]:
-            unary_handler(operator_mapping[symbol], handler) for symbol, handler in (
-                (NONE, Non),
-                (PRESENT, Present),
-                (NOT, Not),
-            )
-    }
-
-    binary_expressions = {
-        operator_mapping[symbol]:
-            binary_handler(operator_mapping[symbol], handler) for symbol, handler in (
-                (EQ, Eq),
-                (NE, Ne),
-                (GT, Gt),
-                (GE, Ge),
-                (LT, Lt),
-                (LE, Le),
-                (IN, In),
-                (NIN, Nin),
-                (OVERLAP, Overlap),
-                (PREFIX, Prefix),
-                (SUFFIX, Suffix)
-            )
+    mapping = {
+        # Comparison
+        EQ: Eq,
+        NE: Ne,
+        GT: Gt,
+        GE: Ge,
+        LT: Lt,
+        LE: Le,
+        IN: In,
+        NIN: Nin,
+        OVERLAP: Overlap,
+        PREFIX: Prefix,
+        SUFFIX: Suffix,
+        NONE: Non,
+        PRESENT: Present,
+        # logical
+        AND: And,
+        OR: Or,
+        NOR: Nor,
+        XOR: Xor,
+        NOT: Not
     }
 
     many_handler = logical_handler(operator_mapping[NOT], operator_mapping[NOR])
 
-    many_expressions = {
-        operator_mapping[symbol]:
-            many_handler(operator_mapping[symbol], handler) for symbol, handler in (
-                (AND, And),
-                (OR, Or),
-                (NOR, Nor),
-                (XOR, Xor),
-            )
-    }
+    handlers:dict[Kind, Comparison | Logical] = {}
+    for kind, symbol in operator_mapping.items():
+        cls = mapping[kind]
+        if cls in (Non, Present, Not):
+            handlers[symbol] = unary_handler(symbol, cls)
+        elif cls in (And, Or, Nor, Xor):
+            handlers[symbol] = many_handler(symbol, cls)
+        else:
+            handlers[symbol] = binary_handler(symbol, cls)
 
-    return {**unary_expressions, **binary_expressions, **many_expressions}
+    return handlers
 
 class Options:
     """Parsing options."""
