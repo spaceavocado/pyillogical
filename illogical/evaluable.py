@@ -37,7 +37,7 @@ class Evaluable(Protocol):
         """Serialize to raw expression"""
 
     def __str__(self) -> str:
-        """Serialize to raw expression"""
+        """Get statement from of expression"""
 
 def flatten_context(context: Context) -> Context:
     """

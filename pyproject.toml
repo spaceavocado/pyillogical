@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [{ name = "David Horak", email = "info@davidhorak.com" }]
 license = { file = "LICENSE.md", content-type="text/markdown" }
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Topic :: Utilities",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
