@@ -3,9 +3,7 @@
 import re
 from enum import Enum
 from typing import Callable, Iterable, Tuple
-from illogical.evaluable import Context, Kind, Primitive, Evaluable
-
-KIND = Kind('reference')
+from illogical.evaluable import Context, Primitive, Evaluable
 
 _DATA_TYPE_RX = r'^.+\.\(([A-Z][a-z]+)\)$'
 _DATA_TYPE_TRIM_RX = r'.\(([A-Z][a-z]+)\)$'
@@ -222,7 +220,7 @@ def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Pri
 def default_serialize_from(address: str) -> str:
     """Default deserialization."""
 
-    return address[1:] if len(address) > 1 and address.startswith("$") else ""
+    return address[1:] if len(address) > 1 and address.startswith("$") else None
 
 def default_serialize_to(operand: str) -> str:
     """Default serialization."""
@@ -231,8 +229,6 @@ def default_serialize_to(operand: str) -> str:
 
 class Reference(Evaluable):
     """Reference operand."""
-
-    kind: KIND
 
     def __init__(
         self,

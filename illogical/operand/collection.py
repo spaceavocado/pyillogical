@@ -1,9 +1,17 @@
 """Collection operand."""
 
 from typing import Iterable
-from illogical.evaluable import Context, Kind, Evaluable, is_evaluable
+from illogical.evaluable import Context, Evaluable, is_evaluable
 
-KIND = Kind('collection')
+EscapeCharacter = str
+r"""
+Charter used to escape fist value within a collection, if the value contains operator value.
+
+Example:
+- `["==", 1, 1]` // interpreted as EQ expression
+- `["\==", 1, 1]` // interpreted as a collection
+"""
+
 
 class InvalidCollection(Exception):
     """
@@ -27,12 +35,10 @@ def escape_operator(operator: str, escape_character: str) -> str:
 class Collection(Evaluable):
     """Collection operand."""
 
-    kind = KIND
-
     def __init__(
         self,
         items: Iterable[Evaluable],
-        escape_character: str = "\\",
+        escape_character: EscapeCharacter = "\\",
         escaped_operators: set[str] = ()
     ):
         if len(items) == 0:

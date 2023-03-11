@@ -1,8 +1,7 @@
 """Comparison expression."""
 
-from contextvars import Context
 from typing import Iterable, Callable
-from illogical.evaluable import Evaluated, Kind, Evaluable, is_evaluable
+from illogical.evaluable import Context, Evaluated, Evaluable, is_evaluable
 
 class Comparison(Evaluable):
     """Comparison expression."""
@@ -10,12 +9,12 @@ class Comparison(Evaluable):
     def __init__(
         self,
         operator: str,
-        kind: Kind,
+        symbol: str,
         comparison: Callable[[Iterable[Evaluated]], bool],
         *operands: Iterable[Evaluable]
     ) -> None:
         self.operator = operator
-        self.kind = kind
+        self.symbol = symbol
         self.comparison = comparison
         self.operands = operands
 
@@ -37,7 +36,7 @@ class Comparison(Evaluable):
         return self.comparison(*res)
 
     def serialize(self):
-        return [self.kind, *[operand.serialize() for operand in self.operands]]
+        return [self.symbol, *[operand.serialize() for operand in self.operands]]
 
     def __str__(self):
         res = f"({str(self.operands[0])} {self.operator}"

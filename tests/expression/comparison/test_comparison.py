@@ -7,16 +7,16 @@ from illogical.expression.comparison.comparison import Comparison
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
-class TestEq(unittest.TestCase):
+class TestComparison(unittest.TestCase):
     def test_serialize(self):
         tests = [
-            ("==", [Value(1), Value(2)], "(1 == 2)"),
-            ("<nil>", [Value(1)], "(1 <nil>)"),
+            ("->", [Value(1), Value(2)], ["->", 1, 2]),
+            ("X", [Value(1)], ["X", 1]),
         ]
 
         for operator, operands, expected in tests:
             operand = Comparison(operator, Kind(operator), lambda *_: False, *operands)
-            self.assertEqual(str(operand), expected)
+            self.assertEqual(operand.serialize(), expected)
 
     def test_simplify(self):
         class Op(Comparison):
@@ -52,13 +52,13 @@ class TestEq(unittest.TestCase):
 
     def test___str__(self):
         tests = [
-            ("->", [Value(1), Value(2)], ["->", 1, 2]),
-            ("X", [Value(1)], ["X", 1]),
+            ("==", [Value(1), Value(2)], "(1 == 2)"),
+            ("<nil>", [Value(1)], "(1 <nil>)"),
         ]
 
         for operator, operands, expected in tests:
             operand = Comparison(operator, Kind(operator), lambda *_: False, *operands)
-            self.assertEqual(operand.serialize(), expected)
+            self.assertEqual(str(operand), expected)
 
 if __name__ == '__main__':
     unittest.main()

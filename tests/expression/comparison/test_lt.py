@@ -5,7 +5,7 @@ import unittest
 from illogical.expression.comparison.lt import Lt
 from illogical.operand.value import Value
 
-class TestEq(unittest.TestCase):
+class TestLt(unittest.TestCase):
     def test_evaluate(self):
         tests = [
             # Truthy

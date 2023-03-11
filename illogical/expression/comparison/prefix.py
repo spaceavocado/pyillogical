@@ -1,17 +1,15 @@
 """Has prefix comparison expression."""
 
-from illogical.evaluable import Evaluable, Kind
+from illogical.evaluable import Evaluable
 from illogical.expression.comparison.comparison import Comparison
-
-KIND = Kind('Prefix')
 
 class Prefix(Comparison):
     """Has prefix comparison expression."""
 
-    def __init__(self, left: Evaluable, right: Evaluable) -> None:
+    def __init__(self, left: Evaluable, right: Evaluable, symbol = "PREFIX") -> None:
         super().__init__(
             "<prefixes>",
-            KIND,
+            symbol,
             lambda left, right: isinstance(left, str) and isinstance(right, str) and \
                 right.startswith(left),
             left,

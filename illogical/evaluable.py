@@ -10,6 +10,13 @@ Expression = Evaluated
 
 Kind = NewType('Kind', str)
 
+def is_primitive(subject) -> bool:
+    """
+    Is subject a primitive value predicate.
+    """
+
+    return subject is None or isinstance(subject, (str, int, float, bool))
+
 def is_evaluable(subject) -> bool:
     """
     Is subject a evaluable object predicate.
@@ -19,8 +26,6 @@ def is_evaluable(subject) -> bool:
 
 class Evaluable(Protocol):
     """Evaluable expression."""
-
-    kind: Kind
 
     def evaluate(self, context: Context) -> Evaluated:
         """Evaluate in the given context."""
@@ -32,7 +37,7 @@ class Evaluable(Protocol):
         """Serialize to raw expression"""
 
     def __str__(self) -> str:
-        """Serialize to raw expression"""
+        """Get statement from of expression"""
 
 def flatten_context(context: Context) -> Context:
     """
