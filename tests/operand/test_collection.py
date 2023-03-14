@@ -1,6 +1,6 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
-import unittest
+import pytest
 
 from illogical.evaluable import is_evaluable
 from illogical.operand.collection import (
@@ -13,101 +13,112 @@ from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
 
-class TestCollection(unittest.TestCase):
-    def test_constructor(self):
-        with self.assertRaises(InvalidCollection):
-            Collection([])
-
-    def test_should_be_escaped(self):
-        tests = [
-            ("==", True),
-            ("!=", False),
-            (None, False),
-            (True, False),
-        ]
-
-        for subject, expected in tests:
-            self.assertEqual(should_be_escaped(subject, ("==")), expected)
-
-    def escape_operator(self):
-        tests = [
-            ("==", "\\=="),
-        ]
-
-        for operator, expected in tests:
-            self.assertEqual(escape_operator(operator, "\\"), expected)
-
-    def test_evaluate(self):
-        context = {
-            "RefA": "A",
-        }
-
-        tests = [
-            ([Value(1)], [1]),
-            ([Value("1")], ["1"]),
-            ([Value(True)], [True]),
-            ([Reference("RefA")], ["A"]),
-            ([Value(1), Reference("RefA")], [1, "A"]),
-            # ({expBinary(eq.New, val(1), val(1)), ref("RefA")}, []any{true, "A"}),
-        ]
-
-        for items, expected in tests:
-            operand = Collection(items)
-            self.assertEqual(operand.evaluate(context), expected)
-
-    def test_serialize(self):
-        tests = [
-            ([Value(1)], [1]),
-            ([Value("1")], ["1"]),
-            ([Value(True)], [True]),
-            ([Reference("RefA")], ["$RefA"]),
-            ([Value(1), Reference("RefA")], [1, "$RefA"]),
-            # ({expBinary(eq.New, val(1), val(1)), ref("RefA")}, []any{true, "A"}),
-            ([Value("=="), Value(1), Value(1)], ["\\==", 1, 1]),
-        ]
-
-        for items, expected in tests:
-            operand = Collection(items, "\\", ("=="))
-            self.assertEqual(operand.serialize(), expected)
-
-    def test_simplify(self):
-        context = {
-            "RefA": "A",
-        }
-
-        tests = [
-            ([Reference("RefB")], Collection([Reference("RefB")])),
-            ([Reference("RefA")], ["A"]),
-            ([Value(1), Reference("RefA")], [1, "A"]),
-            (
-                [Reference("RefA"), Reference("RefB")],
-                Collection([Reference("RefA"), Reference("RefB")]),
-            ),
-        ]
-
-        for items, expected in tests:
-            operand = Collection(items)
-            simplified = operand.simplify(context)
-
-            if is_evaluable(simplified):
-                self.assertEqual(str(simplified), str(expected))
-            else:
-                self.assertEqual(simplified, expected)
-
-    def test___str__(self):
-        tests = [
-            ([Value(1)], "[1]"),
-            ([Value("1")], '["1"]'),
-            ([Value(True)], "[true]"),
-            ([Reference("RefA")], "[{RefA}]"),
-            ([Value(1), Reference("RefA")], "[1, {RefA}]"),
-            # ({expBinary(eq.New, val(1), val(1)), ref("RefA")}, []any{true, "A"}),
-        ]
-
-        for items, expected in tests:
-            operand = Collection(items)
-            self.assertEqual(str(operand), expected)
+@pytest.mark.parametrize(
+    "operands, expected",
+    [([], InvalidCollection)],
+)
+def test_constructor(operands, expected):
+    with pytest.raises(expected):
+        Collection(operands)
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.parametrize(
+    "subject, expected",
+    [
+        ("==", True),
+        ("!=", False),
+        (None, False),
+        (True, False),
+    ],
+)
+def test_should_be_escaped(subject, expected):
+    assert should_be_escaped(subject, ("==",)) == expected
+
+
+@pytest.mark.parametrize(
+    "operator, escape_character, expected",
+    [
+        ("==", "\\", "\\=="),
+        ("==", "g", "g=="),
+    ],
+)
+def test_escape_operator(operator, escape_character, expected):
+    assert escape_operator(operator, escape_character) == expected
+
+
+@pytest.mark.parametrize(
+    "items, expected",
+    [
+        ([Value(1)], [1]),
+        ([Value("1")], ["1"]),
+        ([Value(True)], [True]),
+        ([Reference("RefA")], ["A"]),
+        ([Value(1), Reference("RefA")], [1, "A"]),
+    ],
+)
+def test_evaluate(items, expected):
+    assert Collection(items).evaluate({"RefA": "A"}) == expected
+
+
+@pytest.mark.parametrize(
+    "items, expected",
+    [
+        ([Value(1)], [1]),
+        ([Value("1")], ["1"]),
+        ([Value(True)], [True]),
+        ([Reference("RefA")], ["$RefA"]),
+        ([Value(1), Reference("RefA")], [1, "$RefA"]),
+        ([Value("=="), Value(1), Value(1)], ["\\==", 1, 1]),
+        ([Value("!="), Value(1), Value(1)], ["!=", 1, 1]),
+    ],
+)
+def test_serialize(items, expected):
+    assert Collection(items, escaped_operators=("==",)).serialize() == expected
+
+
+@pytest.mark.parametrize(
+    "items, expected",
+    [
+        ([Reference("RefB")], Collection([Reference("RefB")])),
+        ([Reference("RefA")], ["A"]),
+        ([Value(1), Reference("RefA")], [1, "A"]),
+        (
+            [Reference("RefA"), Reference("RefB")],
+            Collection([Reference("RefA"), Reference("RefB")]),
+        ),
+    ],
+)
+def test_simplify(items, expected):
+    simplified = Collection(items).simplify({"RefA": "A"})
+
+    if is_evaluable(simplified):
+        assert str(simplified) == str(expected)
+    else:
+        assert simplified == expected
+
+
+@pytest.mark.parametrize(
+    "items, expected",
+    [
+        ([Value(1)], "[1]"),
+        ([Value("1")], '["1"]'),
+        ([Value(True)], "[true]"),
+        ([Reference("RefA")], "[{RefA}]"),
+        ([Value(1), Reference("RefA")], "[1, {RefA}]"),
+        # ({expBinary(eq.New, val(1), val(1)), ref("RefA")}, []any{true, "A"}),
+    ],
+)
+def test___str__(items, expected):
+    assert str(Collection(items)) == expected
+
+
+@pytest.mark.parametrize(
+    "items, expected",
+    [
+        ([Value(1)], "Collection([Value(1)])"),
+        ([Reference("RefA")], 'Collection([Reference("RefA")])'),
+        ([Value(1), Reference("RefA")], 'Collection([Value(1), Reference("RefA")])'),
+    ],
+)
+def test___repr__(items, expected):
+    assert repr(Collection(items)) == expected

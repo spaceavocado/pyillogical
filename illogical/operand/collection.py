@@ -10,8 +10,8 @@ Charter used to escape fist value within a collection, if the value
 contains operator value.
 
 Example:
-- `["==", 1, 1]` // interpreted as EQ expression
-- `["\==", 1, 1]` // interpreted as a collection
+    - `["==", 1, 1]` // interpreted as EQ expression
+    - `["\==", 1, 1]` // interpreted as a collection
 """
 
 
@@ -75,3 +75,6 @@ class Collection(Evaluable):
 
     def __str__(self):
         return f"[{', '.join(str(item) for item in self.items)}]"
+
+    def __repr__(self):
+        return f"Collection([{', '.join(repr(item) for item in self.items)}])"

@@ -24,6 +24,6 @@ class Nin(Comparison):
             return True
 
         if left_is_iterable:
-            return not right in left
+            return right not in left
 
-        return not left in right
+        return left not in right

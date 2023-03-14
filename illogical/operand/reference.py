@@ -287,3 +287,11 @@ class Reference(Evaluable):
 
     def __str__(self):
         return f"{{{self.address}}}"
+
+    def __repr__(self):
+        path = re.sub(r'(?<!\\)"', '\\"', self.path)
+
+        if self.data_type is not DataType.UNDEFINED:
+            path = f"{path}.({self.data_type.name.capitalize()})"
+
+        return f'Reference("{path}")'
