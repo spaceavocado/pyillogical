@@ -1,10 +1,11 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import Kind
 
+from illogical.evaluable import Kind
 from illogical.expression.logical.logical import Logical
 from illogical.operand.value import Value
+
 
 class TestLogical(unittest.TestCase):
     def test_serialize(self):

@@ -1,11 +1,13 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import is_evaluable
 
-from illogical.operand.collection import Collection, InvalidCollection, should_be_escaped, escape_operator
-from illogical.operand.value import Value
+from illogical.evaluable import is_evaluable
+from illogical.operand.collection import (Collection, InvalidCollection,
+                                          escape_operator, should_be_escaped)
 from illogical.operand.reference import Reference
+from illogical.operand.value import Value
+
 
 class TestCollection(unittest.TestCase):
     def test_constructor(self):

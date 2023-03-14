@@ -6,6 +6,7 @@ from illogical.expression.comparison.ne import Ne
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
+
 class TestNe(unittest.TestCase):
     def test_evaluate(self):
         tests = [

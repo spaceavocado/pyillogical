@@ -6,6 +6,7 @@ from illogical.expression.comparison.prefix import Prefix
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
+
 class TestPrefix(unittest.TestCase):
     def test_evaluate(self):
         tests = [

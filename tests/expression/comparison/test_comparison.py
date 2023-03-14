@@ -1,11 +1,12 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import Evaluable, Kind, is_evaluable
 
+from illogical.evaluable import Evaluable, Kind, is_evaluable
 from illogical.expression.comparison.comparison import Comparison
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
+
 
 class TestComparison(unittest.TestCase):
     def test_serialize(self):

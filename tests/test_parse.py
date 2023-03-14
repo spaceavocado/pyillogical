@@ -1,6 +1,7 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
+
 from illogical.evaluable import is_evaluable
 from illogical.expression.comparison.eq import Eq
 from illogical.expression.comparison.ge import Ge
@@ -20,11 +21,17 @@ from illogical.expression.logical.not_exp import Not
 from illogical.expression.logical.or_exp import Or
 from illogical.expression.logical.xor import Xor
 from illogical.operand.collection import Collection
-from illogical.operand.reference import Reference, default_serialize_from, default_serialize_to
+from illogical.operand.reference import (Reference, default_serialize_from,
+                                         default_serialize_to)
 from illogical.operand.value import Value
-from illogical.parser.parse import IN, AND, DEFAULT_ESCAPE_CHARACTER, DEFAULT_OPERATOR_MAPPING, \
-    EQ, GE, GT, LE, LT, NE, NIN, NONE, NOR, NOT, OR, PRESENT, PREFIX, SUFFIX, XOR, \
-        UnexpectedExpressionInput, UnexpectedOperand, is_escaped, parse, to_reference_address
+from illogical.parser.parse import (AND, DEFAULT_ESCAPE_CHARACTER,
+                                    DEFAULT_OPERATOR_MAPPING, EQ, GE, GT, IN,
+                                    LE, LT, NE, NIN, NONE, NOR, NOT, OR,
+                                    PREFIX, PRESENT, SUFFIX, XOR,
+                                    UnexpectedExpressionInput,
+                                    UnexpectedOperand, is_escaped, parse,
+                                    to_reference_address)
+
 
 def address(val: str) -> str:
     return default_serialize_to(val)

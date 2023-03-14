@@ -1,61 +1,56 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-function-docstring
 
-import unittest
+import pytest
 
 from illogical.operand.value import Value
 
-class TestValue(unittest.TestCase):
-    def test_evaluate(self):
-        tests = [
-            (1, 1),
-            (1.1, 1.1),
-            ("val", "val"),
-            (True, True),
-            (False, False),
-        ]
 
-        for arg, expected in tests:
-            operand = Value(arg)
-            self.assertIs(operand.evaluate({}), expected)
+@pytest.mark.parametrize("val, expected", [
+    (1, 1),
+    (1.1, 1.1),
+    ("val", "val"),
+    (True, True),
+    (False, False),
+])
+def test_evaluate(val, expected):
+    assert Value(val).evaluate({}) == expected
 
-    def test_serialize(self):
-        tests = [
-            (1, 1),
-            (1.1, 1.1),
-            ("val", "val"),
-            (True, True),
-            (False, False),
-        ]
+@pytest.mark.parametrize("val, expected", [
+    (1, 1),
+    (1.1, 1.1),
+    ("val", "val"),
+    (True, True),
+    (False, False),
+])
+def test_serialize(val, expected):
+    assert Value(val).serialize() == expected
 
-        for arg, expected in tests:
-            operand = Value(arg)
-            self.assertIs(operand.serialize(), expected)
+@pytest.mark.parametrize("val, expected", [
+    (1, 1),
+    (1.1, 1.1),
+    ("val", "val"),
+    (True, True),
+    (False, False),
+])
+def test_simplify(val, expected):
+    assert Value(val).simplify({}) == expected
 
-    def test_simplify(self):
-        tests = [
-            (1, 1),
-            (1.1, 1.1),
-            ("val", "val"),
-            (True, True),
-            (False, False),
-        ]
+@pytest.mark.parametrize("val, expected", [
+    (1, "1"),
+    (1.1, "1.1"),
+    ("val", '"val"'),
+    (True, "true"),
+    (False, "false"),
+])
+def test___str__(val, expected):
+    assert str(Value(val)) == expected
 
-        for arg, expected in tests:
-            operand = Value(arg)
-            self.assertIs(operand.simplify({}), expected)
-
-    def test___str__(self):
-        tests = [
-            (1, "1"),
-            (1.1, "1.1"),
-            ("val", '"val"'),
-            (True, "true"),
-            (False, "false"),
-        ]
-
-        for arg, expected in tests:
-            operand = Value(arg)
-            self.assertEqual(str(operand), expected)
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.parametrize("val, expected", [
+    (1, "Value(1)"),
+    (1.1, "Value(1.1)"),
+    ("val", 'Value("val")'),
+    (True, "Value(True)"),
+    (False, "Value(False)"),
+])
+def test___repr__(val, expected):
+    assert repr(Value(val)) == expected

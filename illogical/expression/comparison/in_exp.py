@@ -3,6 +3,7 @@
 from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
 
+
 class In(Comparison):
     """In comparison expression."""
 

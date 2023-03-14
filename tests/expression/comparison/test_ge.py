@@ -5,6 +5,7 @@ import unittest
 from illogical.expression.comparison.ge import Ge
 from illogical.operand.value import Value
 
+
 class TestGe(unittest.TestCase):
     def test_evaluate(self):
         tests = [

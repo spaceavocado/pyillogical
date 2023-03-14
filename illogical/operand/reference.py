@@ -3,7 +3,8 @@
 import re
 from enum import Enum
 from typing import Callable, Iterable, Tuple
-from illogical.evaluable import Context, Primitive, Evaluable
+
+from illogical.evaluable import Context, Evaluable, Primitive
 
 _DATA_TYPE_RX = r'^.+\.\(([A-Z][a-z]+)\)$'
 _DATA_TYPE_TRIM_RX = r'.\(([A-Z][a-z]+)\)$'

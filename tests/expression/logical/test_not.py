@@ -1,11 +1,12 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import is_evaluable
 
+from illogical.evaluable import is_evaluable
 from illogical.expression.logical.not_exp import InvalidNotExpression, Not
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
+
 
 class TestNot(unittest.TestCase):
     def test_evaluate(self):

@@ -1,7 +1,8 @@
 """Evaluable expression."""
 
 from __future__ import annotations
-from typing import Any, Protocol, Iterable, NewType
+
+from typing import Any, Iterable, NewType, Protocol
 
 Context = dict[str, Any]
 Primitive = str | int | float | bool | None

@@ -6,6 +6,7 @@ from illogical.expression.comparison.suffix import Suffix
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
+
 class TestSuffix(unittest.TestCase):
     def test_evaluate(self):
         tests = [

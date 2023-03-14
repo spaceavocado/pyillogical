@@ -3,8 +3,11 @@
 """And logical expression."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
+from illogical.expression.logical.logical import (InvalidLogicalExpression,
+                                                  Logical)
+
 
 class And(Logical):
     """And logical expression."""

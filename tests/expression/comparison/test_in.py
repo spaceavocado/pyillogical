@@ -6,6 +6,7 @@ from illogical.expression.comparison.in_exp import In
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
+
 class TestIn(unittest.TestCase):
     def test_evaluate(self):
         tests = [

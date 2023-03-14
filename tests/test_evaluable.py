@@ -1,9 +1,11 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import flatten_context, is_primitive, is_evaluable
+
+from illogical.evaluable import flatten_context, is_evaluable, is_primitive
 from illogical.expression.logical.and_exp import And
 from illogical.operand.value import Value
+
 
 class TestEvaluable(unittest.TestCase):
     def test_is_primitive(self):

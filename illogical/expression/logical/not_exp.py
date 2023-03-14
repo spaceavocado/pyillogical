@@ -3,6 +3,7 @@
 from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import Logical
 
+
 class InvalidNotExpression(Exception):
     """Logical NOT expression's operand must be evaluated to boolean value."""
 

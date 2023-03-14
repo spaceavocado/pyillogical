@@ -3,8 +3,9 @@ A micro conditional engine used to parse the logical and comparison expressions,
 an expression in data context, and provide access to a text form of the given expression.
 """
 
-from illogical.evaluable import Context, Evaluable, Evaluated, flatten_context, Expression
-from illogical.parser.parse import parse, Options
+from illogical.evaluable import (Context, Evaluable, Evaluated, Expression,
+                                 flatten_context)
+from illogical.parser.parse import Options, parse
 
 
 class Illogical():

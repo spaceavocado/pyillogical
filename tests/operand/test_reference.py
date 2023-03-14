@@ -1,9 +1,15 @@
 # pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
 
 import unittest
-from illogical.evaluable import flatten_context, is_evaluable
 
-from illogical.operand.reference import DataType, Reference, context_lookup, default_serialize_from, default_serialize_to, evaluate, get_data_type, is_ignored_path, to_boolean, to_float, to_int, to_number, to_string, trim_data_type
+from illogical.evaluable import flatten_context, is_evaluable
+from illogical.operand.reference import (DataType, Reference, context_lookup,
+                                         default_serialize_from,
+                                         default_serialize_to, evaluate,
+                                         get_data_type, is_ignored_path,
+                                         to_boolean, to_float, to_int,
+                                         to_number, to_string, trim_data_type)
+
 
 class TestReference(unittest.TestCase):
     def test_default_serialize_from(self):

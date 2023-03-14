@@ -3,6 +3,7 @@
 from illogical.evaluable import Evaluable
 from illogical.expression.comparison.comparison import Comparison
 
+
 class Prefix(Comparison):
     """Has prefix comparison expression."""
 
