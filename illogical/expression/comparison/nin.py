@@ -5,6 +5,7 @@
 from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
 
+
 class Nin(Comparison):
     """Not in comparison expression."""
 

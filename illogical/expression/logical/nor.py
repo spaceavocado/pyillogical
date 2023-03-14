@@ -3,9 +3,12 @@
 """Negative or logical expression."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
+from illogical.expression.logical.logical import (InvalidLogicalExpression,
+                                                  Logical)
 from illogical.expression.logical.not_exp import Not
+
 
 class Nor(Logical):
     """Negative or logical expression."""

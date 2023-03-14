@@ -1,6 +1,7 @@
 """Collection operand."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, is_evaluable
 
 EscapeCharacter = str

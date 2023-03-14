@@ -5,6 +5,7 @@
 from illogical.evaluable import Evaluable, Evaluated
 from illogical.expression.comparison.comparison import Comparison
 
+
 class Overlap(Comparison):
     """Overlap comparison expression."""
 

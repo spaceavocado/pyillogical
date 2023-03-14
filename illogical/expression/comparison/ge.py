@@ -3,6 +3,7 @@
 from illogical.evaluable import Evaluable
 from illogical.expression.comparison.comparison import Comparison
 
+
 class Ge(Comparison):
     """Greater or equal comparison expression."""
 

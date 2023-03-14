@@ -1,7 +1,9 @@
 """Logical expression."""
 
 from typing import Iterable
+
 from illogical.evaluable import Evaluable
+
 
 class InvalidLogicalExpression(Exception):
     """Non unary logical expression must have at least 2 operands"""

@@ -3,31 +3,36 @@
 """Expression parser."""
 
 from typing import Iterable
-from illogical.evaluable import Evaluable, Evaluated, Expression, Kind, is_primitive
+
+from illogical.evaluable import (Evaluable, Evaluated, Expression, Kind,
+                                 is_primitive)
 from illogical.expression.comparison.comparison import Comparison
-from illogical.expression.logical.logical import Logical
-from illogical.operand.collection import Collection
-from illogical.operand.reference import IgnoredPaths, IgnoredPathsRx, Reference, SerializeFrom, \
-    SerializeTo, default_serialize_from, default_serialize_to
-from illogical.expression.logical.and_exp import And
-from illogical.expression.logical.or_exp import Or
-from illogical.expression.logical.nor import Nor
-from illogical.expression.logical.xor import Xor
-from illogical.expression.logical.not_exp import Not
 from illogical.expression.comparison.eq import Eq
-from illogical.expression.comparison.ne import Ne
-from illogical.expression.comparison.gt import Gt
 from illogical.expression.comparison.ge import Ge
-from illogical.expression.comparison.lt import Lt
-from illogical.expression.comparison.le import Le
+from illogical.expression.comparison.gt import Gt
 from illogical.expression.comparison.in_exp import In
+from illogical.expression.comparison.le import Le
+from illogical.expression.comparison.lt import Lt
+from illogical.expression.comparison.ne import Ne
 from illogical.expression.comparison.nin import Nin
+from illogical.expression.comparison.none import Non
 from illogical.expression.comparison.overlap import Overlap
 from illogical.expression.comparison.prefix import Prefix
-from illogical.expression.comparison.suffix import Suffix
-from illogical.expression.comparison.none import Non
 from illogical.expression.comparison.present import Present
+from illogical.expression.comparison.suffix import Suffix
+from illogical.expression.logical.and_exp import And
+from illogical.expression.logical.logical import Logical
+from illogical.expression.logical.nor import Nor
+from illogical.expression.logical.not_exp import Not
+from illogical.expression.logical.or_exp import Or
+from illogical.expression.logical.xor import Xor
+from illogical.operand.collection import Collection
+from illogical.operand.reference import (IgnoredPaths, IgnoredPathsRx,
+                                         Reference, SerializeFrom, SerializeTo,
+                                         default_serialize_from,
+                                         default_serialize_to)
 from illogical.operand.value import Value
+
 
 class UnexpectedExpressionInput(Exception):
     """Unexpected expression input."""
