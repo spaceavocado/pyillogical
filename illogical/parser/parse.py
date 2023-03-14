@@ -97,8 +97,8 @@ DEFAULT_ESCAPE_CHARACTER = "\\"
 
 OperatorMapping = dict[Kind, str]
 """
-Mapping of the operators. The key is unique operator symbol, and the value is the key used to
-represent the given operator in the raw expression.
+Mapping of the operators. The key is unique operator symbol, and the value is the key
+used to represent the given operator in the raw expression.
 
 Example:
 

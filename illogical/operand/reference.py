@@ -21,13 +21,15 @@ otherwise evaluated as a static value.
 
 SerializeTo = Callable[[str], str]
 """
-A function used to transform the operand into the reference annotation stripped form. I.e. remove
-any annotation used to detect the reference type. E.g. "$Reference" => "Reference".
+A function used to transform the operand into the reference annotation stripped
+form. I.e. remove any annotation used to detect the reference type.
+E.g. "$Reference" => "Reference".
 """
 
 IgnoredPaths = Iterable[str]
 """
-Reference paths which should be ignored while simplification is applied. Must be an exact match.
+Reference paths which should be ignored while simplification is applied.
+Must be an exact match.
 """
 
 IgnoredPathsRx = Iterable[str]
@@ -83,7 +85,8 @@ def is_ignored_path(
     ignored_path_rx: IgnoredPathsRx = None,
 ) -> bool:
     """
-    Is ignored path by simplification options (ignored paths, ignored paths rx) predicate.
+    Is ignored path by simplification options (ignored paths,
+    ignored paths rx) predicate.
     """
 
     if ignored_paths:
@@ -169,7 +172,8 @@ def to_string(val):
 
 def to_boolean(val):
     """
-    Convert val to boolean if possible. Number is converted True, False if 1, 0 respectively.
+    Convert val to boolean if possible.
+    Number is converted True, False if 1, 0 respectively.
     """
 
     if isinstance(val, bool):

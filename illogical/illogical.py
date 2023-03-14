@@ -1,6 +1,7 @@
 """
-A micro conditional engine used to parse the logical and comparison expressions, evaluate
-an expression in data context, and provide access to a text form of the given expression.
+A micro conditional engine used to parse the logical and comparison expressions,
+evaluate an expression in data context, and provide access to a text form of the
+given expression.
 """
 
 from illogical.evaluable import (
@@ -60,8 +61,9 @@ class Illogical:
         self, expression: Expression, context: Context
     ) -> Evaluated | Evaluable:
         """
-        Simplify an expression in a given context. This is useful when you already have some of
-        the properties of context and wants to try to evaluate the expression.
+        Simplify an expression in a given context. This is useful when you already
+        have some of the properties of context and wants to try to evaluate the
+        expression.
 
         Example:
 

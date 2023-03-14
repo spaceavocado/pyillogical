@@ -6,7 +6,8 @@ from illogical.evaluable import Context, Evaluable, is_evaluable
 
 EscapeCharacter = str
 r"""
-Charter used to escape fist value within a collection, if the value contains operator value.
+Charter used to escape fist value within a collection, if the value
+contains operator value.
 
 Example:
 - `["==", 1, 1]` // interpreted as EQ expression
