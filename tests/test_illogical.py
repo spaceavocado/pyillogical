@@ -15,6 +15,7 @@ from illogical.parser.parse import AND, DEFAULT_OPERATOR_MAPPING, EQ, Options
 def address(val: str) -> str:
     return default_serialize_to(val)
 
+
 class TestIllogical(unittest.TestCase):
     def test_parse(self):
         tests = [
@@ -22,7 +23,10 @@ class TestIllogical(unittest.TestCase):
             (address("path"), Reference("path")),
             ([1], Collection([Value(1)])),
             ([DEFAULT_OPERATOR_MAPPING[EQ], 1, 1], Eq(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[AND], True, True], And([Value(True), Value(True)])),
+            (
+                [DEFAULT_OPERATOR_MAPPING[AND], True, True],
+                And([Value(True), Value(True)]),
+            ),
         ]
 
         for expression, expected in tests:
@@ -40,7 +44,9 @@ class TestIllogical(unittest.TestCase):
         ]
 
         for expression, expected in tests:
-            self.assertEqual(Illogical().evaluate(expression, { "path": "value" }), expected)
+            self.assertEqual(
+                Illogical().evaluate(expression, {"path": "value"}), expected
+            )
 
     def test_simplify(self):
         tests = [
@@ -54,18 +60,14 @@ class TestIllogical(unittest.TestCase):
             ([DEFAULT_OPERATOR_MAPPING[AND], True, True], True),
             (
                 [DEFAULT_OPERATOR_MAPPING[AND], True, address("missing")],
-                Reference("missing")
+                Reference("missing"),
             ),
         ]
 
         for expression, expected in tests:
-            res = Illogical().simplify(expression, {
-                "path": "value",
-                "nested": {
-                    "inner": 2
-                },
-                "list": [1, 3]
-            })
+            res = Illogical().simplify(
+                expression, {"path": "value", "nested": {"inner": 2}, "list": [1, 3]}
+            )
 
             if is_evaluable(expected):
                 self.assertEqual(str(res), str(expected))
@@ -97,8 +99,10 @@ class TestIllogical(unittest.TestCase):
 
         for expression, expected in tests:
             self.assertEqual(
-                Illogical(Options(operator_mapping=operator_mapping)).evaluate(expression, {}),
-                expected
+                Illogical(Options(operator_mapping=operator_mapping)).evaluate(
+                    expression, {}
+                ),
+                expected,
             )
 
     def test_escape_character(self):
@@ -109,8 +113,9 @@ class TestIllogical(unittest.TestCase):
         for expression, expected in tests:
             self.assertEqual(
                 str(Illogical(Options(escape_character="*")).parse(expression)),
-                str(expected)
+                str(expected),
             )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

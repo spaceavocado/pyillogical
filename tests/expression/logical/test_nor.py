@@ -29,7 +29,7 @@ class TestNor(unittest.TestCase):
             # Falsy
             ([Value(True), Value(True)], False),
             ([Value(True), Value(False)], False),
-            ([Value(False), Value(True)], False)
+            ([Value(False), Value(True)], False),
         ]
 
         for operands, expected in tests:
@@ -46,18 +46,19 @@ class TestNor(unittest.TestCase):
             ([Reference("Missing"), Value(False)], Not(Reference("Missing"))),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Nor([Reference("Missing"), Reference("Missing")])
+                Nor([Reference("Missing"), Reference("Missing")]),
             ),
         ]
 
         for operands, expected in tests:
             operand = Nor(operands)
-            simplified = operand.simplify({ "RefA": True })
+            simplified = operand.simplify({"RefA": True})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
             else:
                 self.assertEqual(simplified, expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

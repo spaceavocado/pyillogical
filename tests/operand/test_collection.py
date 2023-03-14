@@ -3,8 +3,12 @@
 import unittest
 
 from illogical.evaluable import is_evaluable
-from illogical.operand.collection import (Collection, InvalidCollection,
-                                          escape_operator, should_be_escaped)
+from illogical.operand.collection import (
+    Collection,
+    InvalidCollection,
+    escape_operator,
+    should_be_escaped,
+)
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
@@ -35,8 +39,8 @@ class TestCollection(unittest.TestCase):
 
     def test_evaluate(self):
         context = {
-		    "RefA": "A",
-	    }
+            "RefA": "A",
+        }
 
         tests = [
             ([Value(1)], [1]),
@@ -68,8 +72,8 @@ class TestCollection(unittest.TestCase):
 
     def test_simplify(self):
         context = {
-		    "RefA": "A",
-	    }
+            "RefA": "A",
+        }
 
         tests = [
             ([Reference("RefB")], Collection([Reference("RefB")])),
@@ -77,7 +81,7 @@ class TestCollection(unittest.TestCase):
             ([Value(1), Reference("RefA")], [1, "A"]),
             (
                 [Reference("RefA"), Reference("RefB")],
-                Collection([Reference("RefA"), Reference("RefB")])
+                Collection([Reference("RefA"), Reference("RefB")]),
             ),
         ]
 
@@ -93,7 +97,7 @@ class TestCollection(unittest.TestCase):
     def test___str__(self):
         tests = [
             ([Value(1)], "[1]"),
-            ([Value("1")], "[\"1\"]"),
+            ([Value("1")], '["1"]'),
             ([Value(True)], "[true]"),
             ([Reference("RefA")], "[{RefA}]"),
             ([Value(1), Reference("RefA")], "[1, {RefA}]"),
@@ -104,5 +108,6 @@ class TestCollection(unittest.TestCase):
             operand = Collection(items)
             self.assertEqual(str(operand), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

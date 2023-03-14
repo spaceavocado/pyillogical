@@ -19,6 +19,7 @@ class InvalidCollection(Exception):
     Collection operand must have at least 1 item.
     """
 
+
 def should_be_escaped(subject, escaped_operators: set[str]) -> bool:
     """Should be the input escaped, i.e. operator character, predicate."""
 
@@ -33,6 +34,7 @@ def escape_operator(operator: str, escape_character: str) -> str:
 
     return f"{escape_character}{operator}"
 
+
 class Collection(Evaluable):
     """Collection operand."""
 
@@ -40,7 +42,7 @@ class Collection(Evaluable):
         self,
         items: Iterable[Evaluable],
         escape_character: EscapeCharacter = "\\",
-        escaped_operators: set[str] = ()
+        escaped_operators: set[str] = (),
     ):
         if len(items) == 0:
             raise InvalidCollection()

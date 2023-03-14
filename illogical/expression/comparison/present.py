@@ -7,10 +7,7 @@ from illogical.expression.comparison.comparison import Comparison
 class Present(Comparison):
     """Is None comparison expression."""
 
-    def __init__(self, operator: Evaluable, symbol = "PRESENT") -> None:
+    def __init__(self, operator: Evaluable, symbol="PRESENT") -> None:
         super().__init__(
-            "<is present>",
-            symbol,
-            lambda operator: operator is not None,
-            operator
+            "<is present>", symbol, lambda operator: operator is not None, operator
         )

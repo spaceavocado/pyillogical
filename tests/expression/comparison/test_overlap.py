@@ -13,7 +13,11 @@ class TestOverlap(unittest.TestCase):
             # Truthy
             (Collection([Value(1)]), Collection([Value(1)]), True),
             (Collection([Value(1), Value(2)]), Collection([Value(1), Value(3)]), True),
-            (Collection([Value(3), Value(2)]), Collection([Value(1), Value(2), Value(3)]), True),
+            (
+                Collection([Value(3), Value(2)]),
+                Collection([Value(1), Value(2), Value(3)]),
+                True,
+            ),
             (Collection([Value("1")]), Collection([Value("1")]), True),
             (Collection([Value(True)]), Collection([Value(True)]), True),
             (Collection([Value(1.1)]), Collection([Value(1.1)]), True),
@@ -28,5 +32,6 @@ class TestOverlap(unittest.TestCase):
             operand = Overlap(left, right)
             self.assertIs(operand.evaluate({}), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

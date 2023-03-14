@@ -27,7 +27,7 @@ class TestOr(unittest.TestCase):
             ([Value(True), Value(False)], True),
             ([Value(False), Value(False), Value(True)], True),
             # Falsy
-            ([Value(False), Value(False)], False)
+            ([Value(False), Value(False)], False),
         ]
 
         for operands, expected in tests:
@@ -43,18 +43,19 @@ class TestOr(unittest.TestCase):
             ([Reference("Missing"), Value(False)], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Or([Reference("Missing"), Reference("Missing")])
+                Or([Reference("Missing"), Reference("Missing")]),
             ),
         ]
 
         for operands, expected in tests:
             operand = Or(operands)
-            simplified = operand.simplify({ "RefA": True })
+            simplified = operand.simplify({"RefA": True})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
             else:
                 self.assertEqual(simplified, expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

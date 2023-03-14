@@ -7,11 +7,5 @@ from illogical.expression.comparison.comparison import Comparison
 class Eq(Comparison):
     """Equal comparison expression"""
 
-    def __init__(self, left: Evaluable, right: Evaluable, symbol = "==") -> None:
-        super().__init__(
-            "==",
-            symbol,
-            lambda left, right: left is right,
-            left,
-            right
-        )
+    def __init__(self, left: Evaluable, right: Evaluable, symbol="==") -> None:
+        super().__init__("==", symbol, lambda left, right: left is right, left, right)

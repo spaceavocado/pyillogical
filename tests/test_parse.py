@@ -21,20 +21,43 @@ from illogical.expression.logical.not_exp import Not
 from illogical.expression.logical.or_exp import Or
 from illogical.expression.logical.xor import Xor
 from illogical.operand.collection import Collection
-from illogical.operand.reference import (Reference, default_serialize_from,
-                                         default_serialize_to)
+from illogical.operand.reference import (
+    Reference,
+    default_serialize_from,
+    default_serialize_to,
+)
 from illogical.operand.value import Value
-from illogical.parser.parse import (AND, DEFAULT_ESCAPE_CHARACTER,
-                                    DEFAULT_OPERATOR_MAPPING, EQ, GE, GT, IN,
-                                    LE, LT, NE, NIN, NONE, NOR, NOT, OR,
-                                    PREFIX, PRESENT, SUFFIX, XOR,
-                                    UnexpectedExpressionInput,
-                                    UnexpectedOperand, is_escaped, parse,
-                                    to_reference_address)
+from illogical.parser.parse import (
+    AND,
+    DEFAULT_ESCAPE_CHARACTER,
+    DEFAULT_OPERATOR_MAPPING,
+    EQ,
+    GE,
+    GT,
+    IN,
+    LE,
+    LT,
+    NE,
+    NIN,
+    NONE,
+    NOR,
+    NOT,
+    OR,
+    PREFIX,
+    PRESENT,
+    SUFFIX,
+    XOR,
+    UnexpectedExpressionInput,
+    UnexpectedOperand,
+    is_escaped,
+    parse,
+    to_reference_address,
+)
 
 
 def address(val: str) -> str:
     return default_serialize_to(val)
+
 
 class TestParse(unittest.TestCase):
     def test_is_escaped(self):
@@ -50,7 +73,11 @@ class TestParse(unittest.TestCase):
     def test_to_reference_address(self):
         tests = [
             ("$expected", default_serialize_from, "expected"),
-            ("__expected", lambda ref: ref[2:] if ref.startswith("__") else None, "expected"),
+            (
+                "__expected",
+                lambda ref: ref[2:] if ref.startswith("__") else None,
+                "expected",
+            ),
             ("expected", lambda ref: ref[2:] if ref.startswith("__") else None, None),
             ("unexpected", default_serialize_from, None),
             (1, default_serialize_from, None),
@@ -91,12 +118,12 @@ class TestParse(unittest.TestCase):
             ([address("ref")], Collection([Reference("ref")])),
             (
                 [1, "val", True, address("ref")],
-                Collection([Value(1), Value("val"), Value(True), Reference("ref")])
+                Collection([Value(1), Value("val"), Value(True), Reference("ref")]),
             ),
             # escaped
             (
                 [f"{DEFAULT_ESCAPE_CHARACTER}{DEFAULT_OPERATOR_MAPPING[AND]}", 1],
-                Collection([Value(DEFAULT_OPERATOR_MAPPING[AND]), Value(1)])
+                Collection([Value(DEFAULT_OPERATOR_MAPPING[AND]), Value(1)]),
             ),
         ]
 
@@ -128,10 +155,22 @@ class TestParse(unittest.TestCase):
 
     def test_logical(self):
         tests = [
-            ([DEFAULT_OPERATOR_MAPPING[AND], True, True], And([Value(True), Value(True)])),
-            ([DEFAULT_OPERATOR_MAPPING[OR], True, True], Or([Value(True), Value(True)])),
-            ([DEFAULT_OPERATOR_MAPPING[NOR], True, True], Nor([Value(True), Value(True)])),
-            ([DEFAULT_OPERATOR_MAPPING[XOR], True, True], Xor([Value(True), Value(True)])),
+            (
+                [DEFAULT_OPERATOR_MAPPING[AND], True, True],
+                And([Value(True), Value(True)]),
+            ),
+            (
+                [DEFAULT_OPERATOR_MAPPING[OR], True, True],
+                Or([Value(True), Value(True)]),
+            ),
+            (
+                [DEFAULT_OPERATOR_MAPPING[NOR], True, True],
+                Nor([Value(True), Value(True)]),
+            ),
+            (
+                [DEFAULT_OPERATOR_MAPPING[XOR], True, True],
+                Xor([Value(True), Value(True)]),
+            ),
             ([DEFAULT_OPERATOR_MAPPING[NOT], True], Not(Value(True))),
         ]
 
@@ -139,7 +178,6 @@ class TestParse(unittest.TestCase):
             res = parse(expression)
             self.assertTrue(is_evaluable(res))
             self.assertEqual(str(res), str(expected))
-
 
     def test_invalid(self):
         tests = [
@@ -153,5 +191,6 @@ class TestParse(unittest.TestCase):
             with self.assertRaises(expected):
                 parse(expression)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

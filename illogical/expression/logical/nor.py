@@ -5,8 +5,7 @@
 from typing import Iterable
 
 from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import (InvalidLogicalExpression,
-                                                  Logical)
+from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
 from illogical.expression.logical.not_exp import Not
 
 
@@ -18,16 +17,12 @@ class Nor(Logical):
         operands: Iterable[Evaluable],
         symbol: str = "NOR",
         not_symbol: str = "NOT",
-        **_
+        **_,
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
-        super().__init__(
-            "NOR",
-            symbol,
-            *operands
-        )
+        super().__init__("NOR", symbol, *operands)
 
         self.not_symbol = not_symbol
 

@@ -43,18 +43,19 @@ class TestAnd(unittest.TestCase):
             ([Reference("Missing"), Value(True)], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                And([Reference("Missing"), Reference("Missing")])
+                And([Reference("Missing"), Reference("Missing")]),
             ),
         ]
 
         for operands, expected in tests:
             operand = And(operands)
-            simplified = operand.simplify({ "RefA": True })
+            simplified = operand.simplify({"RefA": True})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
             else:
                 self.assertEqual(simplified, expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

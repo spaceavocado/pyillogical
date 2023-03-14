@@ -29,5 +29,6 @@ class TestLogical(unittest.TestCase):
             operand = Logical(operator, Kind(operator), *operands)
             self.assertEqual(str(operand), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

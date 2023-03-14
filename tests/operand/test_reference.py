@@ -3,12 +3,22 @@
 import unittest
 
 from illogical.evaluable import flatten_context, is_evaluable
-from illogical.operand.reference import (DataType, Reference, context_lookup,
-                                         default_serialize_from,
-                                         default_serialize_to, evaluate,
-                                         get_data_type, is_ignored_path,
-                                         to_boolean, to_float, to_int,
-                                         to_number, to_string, trim_data_type)
+from illogical.operand.reference import (
+    DataType,
+    Reference,
+    context_lookup,
+    default_serialize_from,
+    default_serialize_to,
+    evaluate,
+    get_data_type,
+    is_ignored_path,
+    to_boolean,
+    to_float,
+    to_int,
+    to_number,
+    to_string,
+    trim_data_type,
+)
 
 
 class TestReference(unittest.TestCase):
@@ -47,7 +57,7 @@ class TestReference(unittest.TestCase):
 
     def test_is_ignored_path(self):
         ignored_paths = ["ignored"]
-        ignored_path_rx = [r'^refC']
+        ignored_path_rx = [r"^refC"]
 
         tests = [
             ("ignored", True),
@@ -57,7 +67,9 @@ class TestReference(unittest.TestCase):
         ]
 
         for path, expected in tests:
-            self.assertEqual(is_ignored_path(path, ignored_paths, ignored_path_rx), expected)
+            self.assertEqual(
+                is_ignored_path(path, ignored_paths, ignored_path_rx), expected
+            )
 
         self.assertEqual(is_ignored_path("path", None, None), False)
 
@@ -144,20 +156,22 @@ class TestReference(unittest.TestCase):
             self.assertEqual(to_boolean(val), expected)
 
     def test_context_lookup(self):
-        context = flatten_context({
-            "refA": 1,
-            "refB": {
-                "refB1": 2,
-                "refB2": "refB1",
-                "refB3": True,
-            },
-            "refC": "refB1",
-            "refD": "refB2",
-            "refE": [1, [2, 3, 4]],
-            "refF": "A",
-            "refG": "1",
-            "refH": "1.1",
-        })
+        context = flatten_context(
+            {
+                "refA": 1,
+                "refB": {
+                    "refB1": 2,
+                    "refB2": "refB1",
+                    "refB3": True,
+                },
+                "refC": "refB1",
+                "refD": "refB2",
+                "refE": [1, [2, 3, 4]],
+                "refF": "A",
+                "refG": "1",
+                "refH": "1.1",
+            }
+        )
 
         tests = [
             ("UNDEFINED", "UNDEFINED", None),
@@ -183,20 +197,22 @@ class TestReference(unittest.TestCase):
             self.assertEqual(value, expected_value)
 
     def test_evaluate(self):
-        context = flatten_context({
-            "refA": 1,
-            "refB": {
-                "refB1": 2,
-                "refB2": "refB1",
-                "refB3": True,
-            },
-            "refC": "refB1",
-            "refD": "refB2",
-            "refE": [1, [2, 3, 4]],
-            "refF": "A",
-            "refG": "1",
-            "refH": "1.1",
-        })
+        context = flatten_context(
+            {
+                "refA": 1,
+                "refB": {
+                    "refB1": 2,
+                    "refB2": "refB1",
+                    "refB3": True,
+                },
+                "refC": "refB1",
+                "refD": "refB2",
+                "refE": [1, [2, 3, 4]],
+                "refF": "A",
+                "refG": "1",
+                "refH": "1.1",
+            }
+        )
 
         tests = [
             ("refA", DataType.INTEGER, 1),
@@ -226,22 +242,24 @@ class TestReference(unittest.TestCase):
 
     def test_simplify(self):
         ignored_paths = ["ignored"]
-        ignored_path_rx = [r'^refC']
+        ignored_path_rx = [r"^refC"]
 
-        context = flatten_context({
-            "refA": 1,
-            "refB": {
-                "refB1": 2,
-                "refB2": "refB1",
-                "refB3": True,
-            },
-            "refC": "refB1",
-            "refD": "refB2",
-            "refE": [1, [2, 3, 4]],
-            "refF": "A",
-            "refG": "1",
-            "refH": "1.1",
-        })
+        context = flatten_context(
+            {
+                "refA": 1,
+                "refB": {
+                    "refB1": 2,
+                    "refB2": "refB1",
+                    "refB3": True,
+                },
+                "refC": "refB1",
+                "refD": "refB2",
+                "refE": [1, [2, 3, 4]],
+                "refF": "A",
+                "refG": "1",
+                "refH": "1.1",
+            }
+        )
 
         tests = [
             ("refJ", Reference("refJ")),
@@ -252,7 +270,9 @@ class TestReference(unittest.TestCase):
         ]
 
         for address, expected in tests:
-            operand = Reference(address, default_serialize_to, ignored_paths, ignored_path_rx)
+            operand = Reference(
+                address, default_serialize_to, ignored_paths, ignored_path_rx
+            )
             simplified = operand.simplify(context)
 
             if is_evaluable(expected):
@@ -270,5 +290,6 @@ class TestReference(unittest.TestCase):
             operand = Reference(address)
             self.assertEqual(str(operand), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -3,12 +3,17 @@ A micro conditional engine used to parse the logical and comparison expressions,
 an expression in data context, and provide access to a text form of the given expression.
 """
 
-from illogical.evaluable import (Context, Evaluable, Evaluated, Expression,
-                                 flatten_context)
+from illogical.evaluable import (
+    Context,
+    Evaluable,
+    Evaluated,
+    Expression,
+    flatten_context,
+)
 from illogical.parser.parse import Options, parse
 
 
-class Illogical():
+class Illogical:
     """
     Illogical conditional engine.
     """
@@ -37,7 +42,7 @@ class Illogical():
     def evaluate(self, expression: Expression, context: Context) -> Evaluated:
         """
         Evaluate expression in the given context.
-        
+
         Example:
 
         context = { "name": "peter" }
@@ -51,8 +56,9 @@ class Illogical():
 
         return self.parse(expression).evaluate(flatten_context(context))
 
-
-    def simplify(self, expression: Expression, context: Context) -> Evaluated | Evaluable:
+    def simplify(
+        self, expression: Expression, context: Context
+    ) -> Evaluated | Evaluable:
         """
         Simplify an expression in a given context. This is useful when you already have some of
         the properties of context and wants to try to evaluate the expression.
@@ -74,7 +80,7 @@ class Illogical():
 
         Example:
 
-        illogical.statement(["==", 5, 5]) 
+        illogical.statement(["==", 5, 5])
             (5 == 5)
 
         illogical.statement(["AND", ["==", 5, 5], ["==", 10, 10]])

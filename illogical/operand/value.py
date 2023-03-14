@@ -22,4 +22,8 @@ class Value(Evaluable):
         return f'"{self.val}"' if isinstance(self.val, str) else str(self.val).lower()
 
     def __repr__(self) -> str:
-        return f'Value("{self.val}")' if isinstance(self.val, str) else f"Value({self.val})"
+        return (
+            f'Value("{self.val}")'
+            if isinstance(self.val, str)
+            else f"Value({self.val})"
+        )

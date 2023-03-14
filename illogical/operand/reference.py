@@ -6,12 +6,12 @@ from typing import Callable, Iterable, Tuple
 
 from illogical.evaluable import Context, Evaluable, Primitive
 
-_DATA_TYPE_RX = r'^.+\.\(([A-Z][a-z]+)\)$'
-_DATA_TYPE_TRIM_RX = r'.\(([A-Z][a-z]+)\)$'
-_FLOAT_RX = r'^\d+\.\d+$'
-_FLOAT_TRIM_RX = r'\.\d+$'
-_INT_RX = r'^0$|^[1-9]\d*$'
-_NESTED_REFERENCE_RX = r'{([^{}]+)}'
+_DATA_TYPE_RX = r"^.+\.\(([A-Z][a-z]+)\)$"
+_DATA_TYPE_TRIM_RX = r".\(([A-Z][a-z]+)\)$"
+_FLOAT_RX = r"^\d+\.\d+$"
+_FLOAT_TRIM_RX = r"\.\d+$"
+_INT_RX = r"^0$|^[1-9]\d*$"
+_NESTED_REFERENCE_RX = r"{([^{}]+)}"
 
 SerializeFrom = Callable[[str], str]
 """
@@ -36,6 +36,7 @@ Reference paths which should be ignored while simplification is applied.
 Matching regular expression patterns.
 """
 
+
 class DataType(Enum):
     """Referenced value data type."""
 
@@ -46,6 +47,7 @@ class DataType(Enum):
     STRING = 4
     BOOLEAN = 5
 
+
 _DATATYPE_KEYS = {
     "Number": DataType.NUMBER,
     "Integer": DataType.INTEGER,
@@ -53,6 +55,7 @@ _DATATYPE_KEYS = {
     "String": DataType.STRING,
     "Boolean": DataType.BOOLEAN,
 }
+
 
 def get_data_type(address: str) -> DataType:
     """Get reference data type from the address, if present."""
@@ -67,15 +70,17 @@ def get_data_type(address: str) -> DataType:
 
     return data_type
 
+
 def trim_data_type(address: str) -> str:
     """Trim data type annotation from the reference address."""
 
     return re.sub(_DATA_TYPE_TRIM_RX, "", address)
 
+
 def is_ignored_path(
     path: str,
     ignored_paths: IgnoredPaths = None,
-    ignored_path_rx: IgnoredPathsRx = None
+    ignored_path_rx: IgnoredPathsRx = None,
 ) -> bool:
     """
     Is ignored path by simplification options (ignored paths, ignored paths rx) predicate.
@@ -90,6 +95,7 @@ def is_ignored_path(
             return True
 
     return False
+
 
 def to_number(val):
     """
@@ -109,6 +115,7 @@ def to_number(val):
             return int(val)
 
     return val
+
 
 def to_int(val):
     """
@@ -131,6 +138,7 @@ def to_int(val):
 
     return val
 
+
 def to_float(val):
     """
     Convert val to float if possible.
@@ -147,6 +155,7 @@ def to_float(val):
 
     return val
 
+
 def to_string(val):
     """
     Convert val to string.
@@ -156,6 +165,7 @@ def to_string(val):
         return str(val).lower()
 
     return str(val)
+
 
 def to_boolean(val):
     """
@@ -176,6 +186,7 @@ def to_boolean(val):
 
     return False
 
+
 def context_lookup(context: Context, path: str) -> Tuple[str, Primitive | None]:
     """Try to get a value from the context object based on the reference path."""
 
@@ -189,8 +200,8 @@ def context_lookup(context: Context, path: str) -> Tuple[str, Primitive | None]:
         path = path[0:start] + str(val) + path[end:]
         match = re.search(_NESTED_REFERENCE_RX, path)
 
-
     return (path, context.get(path))
+
 
 _DATATYPE_HANDLERS = {
     DataType.NUMBER: to_number,
@@ -199,6 +210,7 @@ _DATATYPE_HANDLERS = {
     DataType.STRING: to_string,
     DataType.BOOLEAN: to_boolean,
 }
+
 
 def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Primitive]:
     """
@@ -223,10 +235,12 @@ def default_serialize_from(address: str) -> str:
 
     return address[1:] if len(address) > 1 and address.startswith("$") else None
 
+
 def default_serialize_to(operand: str) -> str:
     """Default serialization."""
 
     return f"${operand}"
+
 
 class Reference(Evaluable):
     """Reference operand."""
@@ -245,7 +259,6 @@ class Reference(Evaluable):
         self.data_type = get_data_type(address)
         self.path = trim_data_type(address)
 
-
     def evaluate(self, context: Context):
         _, res = evaluate(context, self.path, self.data_type)
         return res
@@ -253,11 +266,12 @@ class Reference(Evaluable):
     def simplify(self, context: Context):
         path, res = evaluate(context, self.path, self.data_type)
 
-        if res is not None or is_ignored_path(path, self.ignored_paths, self.ignored_path_rx):
+        if res is not None or is_ignored_path(
+            path, self.ignored_paths, self.ignored_path_rx
+        ):
             return res
 
         return self
-
 
     def serialize(self):
         path = self.path

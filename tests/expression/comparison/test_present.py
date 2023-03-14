@@ -24,5 +24,6 @@ class TestPresent(unittest.TestCase):
             operand = Present(operand)
             self.assertIs(operand.evaluate({}), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

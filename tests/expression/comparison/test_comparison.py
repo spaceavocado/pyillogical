@@ -23,11 +23,7 @@ class TestComparison(unittest.TestCase):
         class Op(Comparison):
             def __init__(self, left: Evaluable, right: Evaluable) -> None:
                 super().__init__(
-                    "==",
-                    Kind("=="),
-                    lambda left, right: left is right,
-                    left,
-                    right
+                    "==", Kind("=="), lambda left, right: left is right, left, right
                 )
 
         tests = [
@@ -35,7 +31,7 @@ class TestComparison(unittest.TestCase):
             ([Reference("Missing"), Value(0)], Op(Reference("Missing"), Value(0))),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Op(Reference("Missing"), Reference("Missing"))
+                Op(Reference("Missing"), Reference("Missing")),
             ),
             ([Value(0), Value(0)], True),
             ([Value(0), Value(1)], False),
@@ -43,8 +39,10 @@ class TestComparison(unittest.TestCase):
         ]
 
         for operands, expected in tests:
-            operand = Comparison("==", Kind("=="), lambda left, right: left is right, *operands)
-            simplified = operand.simplify({ "RefA": "A" })
+            operand = Comparison(
+                "==", Kind("=="), lambda left, right: left is right, *operands
+            )
+            simplified = operand.simplify({"RefA": "A"})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
@@ -61,5 +59,6 @@ class TestComparison(unittest.TestCase):
             operand = Comparison(operator, Kind(operator), lambda *_: False, *operands)
             self.assertEqual(str(operand), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

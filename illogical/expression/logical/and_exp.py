@@ -5,27 +5,17 @@
 from typing import Iterable
 
 from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import (InvalidLogicalExpression,
-                                                  Logical)
+from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
 
 
 class And(Logical):
     """And logical expression."""
 
-    def __init__(
-        self,
-        operands: Iterable[Evaluable],
-        symbol: str = "AND",
-        **_
-    ) -> None:
+    def __init__(self, operands: Iterable[Evaluable], symbol: str = "AND", **_) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
-        super().__init__(
-            "AND",
-            symbol,
-            *operands
-        )
+        super().__init__("AND", symbol, *operands)
 
     def evaluate(self, context: Context) -> bool:
         for operand in self.operands:

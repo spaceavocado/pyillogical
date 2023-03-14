@@ -44,28 +44,29 @@ class TestXor(unittest.TestCase):
             ([Reference("RefA"), Value(True)], False),
             (
                 [Reference("Missing"), Value(True), Reference("Missing")],
-                Nor([Reference("Missing"), Reference("Missing")])
+                Nor([Reference("Missing"), Reference("Missing")]),
             ),
             (
                 [Reference("Missing"), Value(True), Value(False)],
-                Not(Reference("Missing"))
+                Not(Reference("Missing")),
             ),
             ([Reference("RefA"), Reference("RefA"), Value(True)], False),
             ([Value(False), Reference("Missing")], Reference("Missing")),
             (
                 [Reference("Missing"), Reference("Missing")],
-                Xor([Reference("Missing"), Reference("Missing")])
+                Xor([Reference("Missing"), Reference("Missing")]),
             ),
         ]
 
         for operands, expected in tests:
             operand = Xor(operands)
-            simplified = operand.simplify({ "RefA": True })
+            simplified = operand.simplify({"RefA": True})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
             else:
                 self.assertEqual(simplified, expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

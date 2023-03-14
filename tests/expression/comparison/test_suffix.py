@@ -30,5 +30,6 @@ class TestSuffix(unittest.TestCase):
             operand = Suffix(left, right)
             self.assertIs(operand.evaluate({}), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

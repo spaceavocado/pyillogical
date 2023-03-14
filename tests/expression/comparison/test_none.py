@@ -24,5 +24,6 @@ class TestNone(unittest.TestCase):
             operand = Non(operand)
             self.assertIs(operand.evaluate({}), expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -32,12 +32,13 @@ class TestNot(unittest.TestCase):
 
         for operand, expected in tests:
             operand = Not(operand)
-            simplified = operand.simplify({ "RefA": True })
+            simplified = operand.simplify({"RefA": True})
 
             if is_evaluable(expected):
                 self.assertEqual(str(simplified), str(expected))
             else:
                 self.assertEqual(simplified, expected)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
