@@ -1,6 +1,7 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring
+# pylint: disable=locally-disabled, missing-function-docstring
 
-import unittest
+import pytest
 
 from illogical.evaluable import is_evaluable
 from illogical.expression.comparison.eq import Eq
@@ -55,142 +56,152 @@ from illogical.parser.parse import (
 )
 
 
-def address(val: str) -> str:
+def mock_address(val: str) -> str:
     return default_serialize_to(val)
 
 
-class TestParse(unittest.TestCase):
-    def test_is_escaped(self):
-        tests = [
-            ("\\expected", "\\", True),
-            ("unexpected", "\\", False),
-            ("\\expected", "", False),
-        ]
-
-        for val, escape_character, expected in tests:
-            self.assertEqual(is_escaped(val, escape_character), expected)
-
-    def test_to_reference_address(self):
-        tests = [
-            ("$expected", default_serialize_from, "expected"),
-            (
-                "__expected",
-                lambda ref: ref[2:] if ref.startswith("__") else None,
-                "expected",
-            ),
-            ("expected", lambda ref: ref[2:] if ref.startswith("__") else None, None),
-            ("unexpected", default_serialize_from, None),
-            (1, default_serialize_from, None),
-        ]
-
-        for reference, reference_from, expected in tests:
-            self.assertEqual(to_reference_address(reference, reference_from), expected)
-
-    def test_value(self):
-        tests = [
-            (1, Value(1)),
-            (1.1, Value(1.1)),
-            ("val", Value("val")),
-            (True, Value(True)),
-        ]
-
-        for expression, expected in tests:
-            res = parse(expression)
-            self.assertTrue(is_evaluable(res))
-            self.assertEqual(str(res), str(expected))
-
-    def test_reference(self):
-        tests = [
-            (address("path"), Reference("path")),
-        ]
-
-        for expression, expected in tests:
-            res = parse(expression)
-            self.assertTrue(is_evaluable(res))
-            self.assertEqual(str(res), str(expected))
-
-    def test_collection(self):
-        tests = [
-            ([1], Collection([Value(1)])),
-            (["val"], Collection([Value("val")])),
-            (["val1", "val2"], Collection([Value("val1"), Value("val2")])),
-            ([True], Collection([Value(True)])),
-            ([address("ref")], Collection([Reference("ref")])),
-            (
-                [1, "val", True, address("ref")],
-                Collection([Value(1), Value("val"), Value(True), Reference("ref")]),
-            ),
-            # escaped
-            (
-                [f"{DEFAULT_ESCAPE_CHARACTER}{DEFAULT_OPERATOR_MAPPING[AND]}", 1],
-                Collection([Value(DEFAULT_OPERATOR_MAPPING[AND]), Value(1)]),
-            ),
-        ]
-
-        for expression, expected in tests:
-            res = parse(expression)
-            self.assertTrue(is_evaluable(res))
-            self.assertEqual(str(res), str(expected))
-
-    def test_comparison(self):
-        tests = [
-            ([DEFAULT_OPERATOR_MAPPING[EQ], 1, 1], Eq(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[NE], 1, 1], Ne(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[GT], 1, 1], Gt(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[GE], 1, 1], Ge(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[LT], 1, 1], Lt(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[LE], 1, 1], Le(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[IN], 1, 1], In(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[NIN], 1, 1], Nin(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[NONE], 1, 1], Non(Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[PRESENT], 1, 1], Present(Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[SUFFIX], 1, 1], Suffix(Value(1), Value(1))),
-            ([DEFAULT_OPERATOR_MAPPING[PREFIX], 1, 1], Prefix(Value(1), Value(1))),
-        ]
-
-        for expression, expected in tests:
-            res = parse(expression)
-            self.assertTrue(is_evaluable(res))
-            self.assertEqual(str(res), str(expected))
-
-    def test_logical(self):
-        tests = [
-            (
-                [DEFAULT_OPERATOR_MAPPING[AND], True, True],
-                And([Value(True), Value(True)]),
-            ),
-            (
-                [DEFAULT_OPERATOR_MAPPING[OR], True, True],
-                Or([Value(True), Value(True)]),
-            ),
-            (
-                [DEFAULT_OPERATOR_MAPPING[NOR], True, True],
-                Nor([Value(True), Value(True)]),
-            ),
-            (
-                [DEFAULT_OPERATOR_MAPPING[XOR], True, True],
-                Xor([Value(True), Value(True)]),
-            ),
-            ([DEFAULT_OPERATOR_MAPPING[NOT], True], Not(Value(True))),
-        ]
-
-        for expression, expected in tests:
-            res = parse(expression)
-            self.assertTrue(is_evaluable(res))
-            self.assertEqual(str(res), str(expected))
-
-    def test_invalid(self):
-        tests = [
-            (None, UnexpectedExpressionInput),
-            ([], UnexpectedOperand),
-            ([lambda: True], UnexpectedOperand),
-            (["val1", lambda: True], UnexpectedOperand),
-        ]
-
-        for expression, expected in tests:
-            with self.assertRaises(expected):
-                parse(expression)
+@pytest.mark.parametrize(
+    "val, escape_character, expected",
+    [
+        ("\\expected", "\\", True),
+        ("unexpected", "\\", False),
+        ("\\expected", "", False),
+    ],
+)
+def test_is_escaped(val, escape_character, expected):
+    assert is_escaped(val, escape_character) == expected
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.parametrize(
+    "reference, reference_from, expected",
+    [
+        ("$expected", default_serialize_from, "expected"),
+        (
+            "__expected",
+            lambda ref: ref[2:] if ref.startswith("__") else None,
+            "expected",
+        ),
+        ("expected", lambda ref: ref[2:] if ref.startswith("__") else None, None),
+        ("unexpected", default_serialize_from, None),
+        (1, default_serialize_from, None),
+    ],
+)
+def test_to_reference_address(reference, reference_from, expected):
+    assert to_reference_address(reference, reference_from) == expected
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        (1, Value(1)),
+        (1.1, Value(1.1)),
+        ("val", Value("val")),
+        (True, Value(True)),
+    ],
+)
+def test_value(expression, expected):
+    res = parse(expression)
+    assert is_evaluable(res) is True
+    assert str(res) == str(expected)
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        (mock_address("path"), Reference("path")),
+    ],
+)
+def test_reference(expression, expected):
+    res = parse(expression)
+    assert is_evaluable(res) is True
+    assert str(res) == str(expected)
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        ([1], Collection([Value(1)])),
+        (["val"], Collection([Value("val")])),
+        (["val1", "val2"], Collection([Value("val1"), Value("val2")])),
+        ([True], Collection([Value(True)])),
+        ([mock_address("ref")], Collection([Reference("ref")])),
+        (
+            [1, "val", True, mock_address("ref")],
+            Collection([Value(1), Value("val"), Value(True), Reference("ref")]),
+        ),
+        # escaped
+        (
+            [f"{DEFAULT_ESCAPE_CHARACTER}{DEFAULT_OPERATOR_MAPPING[AND]}", 1],
+            Collection([Value(DEFAULT_OPERATOR_MAPPING[AND]), Value(1)]),
+        ),
+    ],
+)
+def test_collection(expression, expected):
+    res = parse(expression)
+    assert is_evaluable(res) is True
+    assert str(res) == str(expected)
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        ([DEFAULT_OPERATOR_MAPPING[EQ], 1, 1], Eq(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[NE], 1, 1], Ne(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[GT], 1, 1], Gt(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[GE], 1, 1], Ge(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[LT], 1, 1], Lt(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[LE], 1, 1], Le(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[IN], 1, 1], In(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[NIN], 1, 1], Nin(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[NONE], 1, 1], Non(Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[PRESENT], 1, 1], Present(Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[SUFFIX], 1, 1], Suffix(Value(1), Value(1))),
+        ([DEFAULT_OPERATOR_MAPPING[PREFIX], 1, 1], Prefix(Value(1), Value(1))),
+    ],
+)
+def test_comparison(expression, expected):
+    res = parse(expression)
+    assert is_evaluable(res) is True
+    assert str(res) == str(expected)
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        (
+            [DEFAULT_OPERATOR_MAPPING[AND], True, True],
+            And([Value(True), Value(True)]),
+        ),
+        (
+            [DEFAULT_OPERATOR_MAPPING[OR], True, True],
+            Or([Value(True), Value(True)]),
+        ),
+        (
+            [DEFAULT_OPERATOR_MAPPING[NOR], True, True],
+            Nor([Value(True), Value(True)]),
+        ),
+        (
+            [DEFAULT_OPERATOR_MAPPING[XOR], True, True],
+            Xor([Value(True), Value(True)]),
+        ),
+        ([DEFAULT_OPERATOR_MAPPING[NOT], True], Not(Value(True))),
+    ],
+)
+def test_logical(expression, expected):
+    res = parse(expression)
+    assert is_evaluable(res) is True
+    assert str(res) == str(expected)
+
+
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        (None, UnexpectedExpressionInput),
+        ([], UnexpectedOperand),
+        ([lambda: True], UnexpectedOperand),
+        (["val1", lambda: True], UnexpectedOperand),
+    ],
+)
+def test_invalid(expression, expected):
+    with pytest.raises(expected):
+        parse(expression)

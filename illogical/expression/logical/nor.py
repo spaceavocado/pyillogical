@@ -53,3 +53,11 @@ class Nor(Logical):
             return Not(simplified[0], self.not_symbol)
 
         return Nor(simplified, self.symbol, self.not_symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+            f'not_symbol="{self.not_symbol}"',
+        ]
+        return f'Nor({", ".join(args)})'

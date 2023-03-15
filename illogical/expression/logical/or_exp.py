@@ -44,3 +44,10 @@ class Or(Logical):
             return simplified[0]
 
         return Or(simplified, self.symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+        ]
+        return f'Or({", ".join(args)})'

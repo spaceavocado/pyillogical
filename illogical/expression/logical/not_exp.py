@@ -28,3 +28,10 @@ class Not(Logical):
             return not res
 
         return self
+
+    def __repr__(self) -> str:
+        args = [
+            f"{repr(self.operands[0])}",
+            f'symbol="{self.symbol}"',
+        ]
+        return f'Not({", ".join(args)})'

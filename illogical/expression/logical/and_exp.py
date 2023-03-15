@@ -44,3 +44,10 @@ class And(Logical):
             return simplified[0]
 
         return And(simplified, self.symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+        ]
+        return f'And({", ".join(args)})'

@@ -64,3 +64,12 @@ class Xor(Logical):
             return Nor(simplified, self.nor_symbol, self.not_symbol)
 
         return Xor(simplified, self.symbol, self.not_symbol, self.nor_symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+            f'not_symbol="{self.not_symbol}"',
+            f'nor_symbol="{self.nor_symbol}"',
+        ]
+        return f'Xor({", ".join(args)})'
