@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "illogical"
-version = "1.0.0"
+version = "1.0.1"
 description = "A micro conditional engine used to parse raw logical and comparison expressions, evaluate the expression in the given data context, and provide access to a text form of the given expressions."
 readme = "README.md"
 authors = [{ name = "David Horak", email = "info@davidhorak.com" }]
@@ -27,5 +27,3 @@ line-length = 88
 
 [tool.flake8]
 max-line-length = 88
-# extend-ignore = ["E203"]
-#     # See https://github.com/PyCQA/pycodestyle/issues/373
