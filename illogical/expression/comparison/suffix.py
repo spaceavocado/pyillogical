@@ -17,3 +17,6 @@ class Suffix(Comparison):
             left,
             right,
         )
+
+    def __repr__(self) -> str:
+        return f"Suffix({repr(self.operands[0])}, {repr(self.operands[1])})"

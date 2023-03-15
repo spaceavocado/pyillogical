@@ -1,29 +1,35 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring
+# pylint: disable=locally-disabled, missing-function-docstring
 
-import unittest
+import pytest
 
 from illogical.expression.comparison.present import Present
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
 
-class TestPresent(unittest.TestCase):
-    def test_evaluate(self):
-        tests = [
-            # Truthy
-            (Value(1), True),
-            (Value(1.1), True),
-            (Value("1"), True),
-            (Value(True), True),
-            (Value(False), True),
-            # Falsy
-            (Reference("Missing"), False),
-        ]
+@pytest.mark.parametrize(
+    "operand, expected",
+    [
+        # Truthy
+        (Value(1), True),
+        (Value(1.1), True),
+        (Value("1"), True),
+        (Value(True), True),
+        (Value(False), True),
+        # Falsy
+        (Reference("Missing"), False),
+    ],
+)
+def test_evaluate(operand, expected):
+    assert Present(operand).evaluate({}) == expected
 
-        for operand, expected in tests:
-            operand = Present(operand)
-            self.assertIs(operand.evaluate({}), expected)
 
-
-if __name__ == "__main__":
-    unittest.main()
+@pytest.mark.parametrize(
+    "operand, expected",
+    [
+        (Value(1), "Present(Value(1))"),
+    ],
+)
+def test___repr__(operand, expected):
+    assert repr(Present(operand)) == expected

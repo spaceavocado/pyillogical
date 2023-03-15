@@ -1,4 +1,5 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring
+# pylint: disable=locally-disabled, missing-function-docstring
 
 import pytest
 
@@ -21,7 +22,7 @@ from illogical.operand.reference import (
 )
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def example_context():
     return flatten_context(
         {
@@ -208,10 +209,8 @@ def test_to_boolean(val, expected):
         ("ref{UNDEFINED}", "ref{UNDEFINED}", None),
     ],
 )
-def test_context_lookup(path, expected_path, expected_value, request):
-    context = request.getfixturevalue("example_context")
-
-    path, value = context_lookup(context, path)
+def test_context_lookup(path, expected_path, expected_value, example_context):
+    path, value = context_lookup(example_context, path)
 
     assert path == expected_path
     assert value == expected_value
@@ -230,17 +229,14 @@ def test_context_lookup(path, expected_path, expected_value, request):
         ("refJ", DataType.UNDEFINED, None),
     ],
 )
-def test_evaluate(path, data_type, expected, request):
-    context = request.getfixturevalue("example_context")
-
-    _, result = evaluate(context, path, data_type)
+def test_evaluate(path, data_type, expected, example_context):
+    _, result = evaluate(example_context, path, data_type)
 
     assert result == expected
 
 
-def test_evaluate_operand(request):
-    context = request.getfixturevalue("example_context")
-    assert Reference("refA").evaluate(context) == 1
+def test_evaluate_operand(example_context):
+    assert Reference("refA").evaluate(example_context) == 1
 
 
 @pytest.mark.parametrize(
@@ -264,11 +260,9 @@ def test_serialize(address, expected):
         ("refC.{refJ}", None),
     ],
 )
-def test_simplify(address, expected, request):
-    context = request.getfixturevalue("example_context")
-
+def test_simplify(address, expected, example_context):
     operand = Reference(address, default_serialize_to, ["ignored"], [r"^refC"])
-    simplified = operand.simplify(context)
+    simplified = operand.simplify(example_context)
 
     if is_evaluable(expected):
         assert str(simplified) == str(expected)

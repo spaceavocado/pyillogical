@@ -11,3 +11,6 @@ class Non(Comparison):
         super().__init__(
             "<in none>", symbol, lambda operator: operator is None, operator
         )
+
+    def __repr__(self) -> str:
+        return f"Non({repr(self.operands[0])})"

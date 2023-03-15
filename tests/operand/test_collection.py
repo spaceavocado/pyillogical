@@ -1,4 +1,5 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring
+# pylint: disable=locally-disabled, missing-function-docstring
 
 import pytest
 
@@ -105,7 +106,6 @@ def test_simplify(items, expected):
         ([Value(True)], "[true]"),
         ([Reference("RefA")], "[{RefA}]"),
         ([Value(1), Reference("RefA")], "[1, {RefA}]"),
-        # ({expBinary(eq.New, val(1), val(1)), ref("RefA")}, []any{true, "A"}),
     ],
 )
 def test___str__(items, expected):

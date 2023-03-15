@@ -27,3 +27,6 @@ class Nin(Comparison):
             return right not in left
 
         return left not in right
+
+    def __repr__(self) -> str:
+        return f"Nin({repr(self.operands[0])}, {repr(self.operands[1])})"

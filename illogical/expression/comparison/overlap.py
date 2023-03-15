@@ -27,3 +27,6 @@ class Overlap(Comparison):
                     return True
 
         return False
+
+    def __repr__(self) -> str:
+        return f"Overlap({repr(self.operands[0])}, {repr(self.operands[1])})"

@@ -11,3 +11,6 @@ class Ne(Comparison):
         super().__init__(
             "!=", symbol, lambda left, right: left is not right, left, right
         )
+
+    def __repr__(self) -> str:
+        return f"Ne({repr(self.operands[0])}, {repr(self.operands[1])})"

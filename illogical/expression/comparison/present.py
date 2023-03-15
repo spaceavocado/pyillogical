@@ -11,3 +11,6 @@ class Present(Comparison):
         super().__init__(
             "<is present>", symbol, lambda operator: operator is not None, operator
         )
+
+    def __repr__(self) -> str:
+        return f"Present({repr(self.operands[0])})"

@@ -25,3 +25,6 @@ class In(Comparison):
             return right in left
 
         return left in right
+
+    def __repr__(self) -> str:
+        return f"In({repr(self.operands[0])}, {repr(self.operands[1])})"

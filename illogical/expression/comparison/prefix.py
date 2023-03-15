@@ -17,3 +17,6 @@ class Prefix(Comparison):
             left,
             right,
         )
+
+    def __repr__(self) -> str:
+        return f"Prefix({repr(self.operands[0])}, {repr(self.operands[1])})"
