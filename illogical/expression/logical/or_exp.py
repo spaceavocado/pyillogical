@@ -3,26 +3,19 @@
 """Or logical expression."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
+
 
 class Or(Logical):
     """Or logical expression."""
 
-    def __init__(
-        self,
-        operands: Iterable[Evaluable],
-        symbol: str = "OR",
-        **_
-    ) -> None:
+    def __init__(self, operands: Iterable[Evaluable], symbol: str = "OR", **_) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
-        super().__init__(
-            "OR",
-            symbol,
-            *operands
-        )
+        super().__init__("OR", symbol, *operands)
 
     def evaluate(self, context: Context) -> bool:
         for operand in self.operands:
@@ -51,3 +44,10 @@ class Or(Logical):
             return simplified[0]
 
         return Or(simplified, self.symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+        ]
+        return f'Or({", ".join(args)})'

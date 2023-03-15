@@ -19,14 +19,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint build twine
+        pip install pytest isort flake8 Flake8-pyproject git+https://github.com/psf/black build twine
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint
       run: |
-        pylint $(git ls-files '*.py') --ignore-patterns=test_.*?py
+        isort .
+        black .
+        flake8 ./illogical ./tests
     - name: Test
       run: |
-        python -m unittest discover
+        pytest .
     - name: Build
       run: |
         python -m build

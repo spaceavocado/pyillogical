@@ -1,7 +1,9 @@
 """Comparison expression."""
 
-from typing import Iterable, Callable
-from illogical.evaluable import Context, Evaluated, Evaluable, is_evaluable
+from typing import Callable, Iterable
+
+from illogical.evaluable import Context, Evaluable, Evaluated, is_evaluable
+
 
 class Comparison(Evaluable):
     """Comparison expression."""
@@ -11,7 +13,7 @@ class Comparison(Evaluable):
         operator: str,
         symbol: str,
         comparison: Callable[[Iterable[Evaluated]], bool],
-        *operands: Iterable[Evaluable]
+        *operands: Iterable[Evaluable],
     ) -> None:
         self.operator = operator
         self.symbol = symbol
@@ -20,7 +22,9 @@ class Comparison(Evaluable):
 
     def evaluate(self, context: Context) -> bool:
         try:
-            return self.comparison(*[operand.evaluate(context) for operand in self.operands])
+            return self.comparison(
+                *[operand.evaluate(context) for operand in self.operands]
+            )
         except TypeError:
             return False
 
@@ -41,5 +45,5 @@ class Comparison(Evaluable):
     def __str__(self):
         res = f"({str(self.operands[0])} {self.operator}"
         if len(self.operands) > 1:
-            res += ' ' + ' '.join(str(operand) for operand in self.operands[1:])
+            res += " " + " ".join(str(operand) for operand in self.operands[1:])
         return res + ")"

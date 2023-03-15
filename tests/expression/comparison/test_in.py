@@ -1,31 +1,39 @@
-# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=locally-disabled, missing-module-docstring, missing-class-docstring
+# pylint: disable=locally-disabled, missing-function-docstring
 
-import unittest
+import pytest
 
 from illogical.expression.comparison.in_exp import In
 from illogical.operand.collection import Collection
 from illogical.operand.value import Value
 
-class TestIn(unittest.TestCase):
-    def test_evaluate(self):
-        tests = [
-            # Truthy
-            (Value(1), Collection([Value(1)]), True),
-            (Collection([Value(1)]), Value(1), True),
-            (Value("1"), Collection([Value("1")]), True),
-            (Value(True), Collection([Value(True)]), True),
-            (Value(1.1), Collection([Value(1.1)]), True),
-            # Falsy
-            (Value(1), Collection([Value(2)]), False),
-            (Collection([Value(2)]), Value(1), False),
-            (Value(1), Value(1), False),
-            (Collection([Value(1)]), Collection([Value(1)]), False),
-            (Value(1), Collection([Value("1")]), False),
-        ]
 
-        for left, right, expected in tests:
-            operand = In(left, right)
-            self.assertIs(operand.evaluate({}), expected)
+@pytest.mark.parametrize(
+    "left, right, expected",
+    [
+        # Truthy
+        (Value(1), Collection([Value(1)]), True),
+        (Collection([Value(1)]), Value(1), True),
+        (Value("1"), Collection([Value("1")]), True),
+        (Value(True), Collection([Value(True)]), True),
+        (Value(1.1), Collection([Value(1.1)]), True),
+        # Falsy
+        (Value(1), Collection([Value(2)]), False),
+        (Collection([Value(2)]), Value(1), False),
+        (Value(1), Value(1), False),
+        (Collection([Value(1)]), Collection([Value(1)]), False),
+        (Value(1), Collection([Value("1")]), False),
+    ],
+)
+def test_evaluate(left, right, expected):
+    assert In(left, right).evaluate({}) == expected
 
-if __name__ == '__main__':
-    unittest.main()
+
+@pytest.mark.parametrize(
+    "left, right, expected",
+    [
+        (Value(1), Collection([Value(1)]), "In(Value(1), Collection([Value(1)]))"),
+    ],
+)
+def test___repr__(left, right, expected):
+    assert repr(In(left, right)) == expected

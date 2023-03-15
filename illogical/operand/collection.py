@@ -1,15 +1,17 @@
 """Collection operand."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, is_evaluable
 
 EscapeCharacter = str
 r"""
-Charter used to escape fist value within a collection, if the value contains operator value.
+Charter used to escape fist value within a collection, if the value
+contains operator value.
 
 Example:
-- `["==", 1, 1]` // interpreted as EQ expression
-- `["\==", 1, 1]` // interpreted as a collection
+    - `["==", 1, 1]` // interpreted as EQ expression
+    - `["\==", 1, 1]` // interpreted as a collection
 """
 
 
@@ -17,6 +19,7 @@ class InvalidCollection(Exception):
     """
     Collection operand must have at least 1 item.
     """
+
 
 def should_be_escaped(subject, escaped_operators: set[str]) -> bool:
     """Should be the input escaped, i.e. operator character, predicate."""
@@ -32,6 +35,7 @@ def escape_operator(operator: str, escape_character: str) -> str:
 
     return f"{escape_character}{operator}"
 
+
 class Collection(Evaluable):
     """Collection operand."""
 
@@ -39,7 +43,7 @@ class Collection(Evaluable):
         self,
         items: Iterable[Evaluable],
         escape_character: EscapeCharacter = "\\",
-        escaped_operators: set[str] = ()
+        escaped_operators: set[str] = (),
     ):
         if len(items) == 0:
             raise InvalidCollection()
@@ -71,3 +75,6 @@ class Collection(Evaluable):
 
     def __str__(self):
         return f"[{', '.join(str(item) for item in self.items)}]"
+
+    def __repr__(self):
+        return f"Collection([{', '.join(repr(item) for item in self.items)}])"

@@ -1,10 +1,12 @@
 """Exclusive or logical expression."""
 
 from typing import Iterable
+
 from illogical.evaluable import Context, Evaluable, Evaluated
 from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
 from illogical.expression.logical.nor import Nor
 from illogical.expression.logical.not_exp import Not
+
 
 class Xor(Logical):
     """Exclusive or logical expression."""
@@ -15,16 +17,12 @@ class Xor(Logical):
         symbol: str = "XOR",
         not_symbol: str = "NOT",
         nor_symbol: str = "NOR",
-        **_
+        **_,
     ) -> None:
         if len(operands) < 2:
             raise InvalidLogicalExpression()
 
-        super().__init__(
-            "XOR",
-            symbol,
-            *operands
-        )
+        super().__init__("XOR", symbol, *operands)
 
         self.not_symbol = not_symbol
         self.nor_symbol = nor_symbol
@@ -66,3 +64,12 @@ class Xor(Logical):
             return Nor(simplified, self.nor_symbol, self.not_symbol)
 
         return Xor(simplified, self.symbol, self.not_symbol, self.nor_symbol)
+
+    def __repr__(self) -> str:
+        args = [
+            f'[{", ".join(repr(operand) for operand in self.operands)}]',
+            f'symbol="{self.symbol}"',
+            f'not_symbol="{self.not_symbol}"',
+            f'nor_symbol="{self.nor_symbol}"',
+        ]
+        return f'Xor({", ".join(args)})'
