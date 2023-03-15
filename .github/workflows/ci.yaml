@@ -23,7 +23,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint
       run: |
-        sort .
+        isort .
         black .
         flake8 ./illogical ./tests
     - name: Test
