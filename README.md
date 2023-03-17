@@ -2,6 +2,7 @@
 
 A micro conditional engine used to parse the logical and comparison expressions, evaluate an expression in data context, and provide access to a text form of the given expression.
 
+[![codecov](https://codecov.io/gh/spaceavocado/pyillogical/branch/master/graph/badge.svg?token=NC8CX62BMC)](https://codecov.io/gh/spaceavocado/pyillogical)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)​
 
 > Revision: Mar 10, 2023.
