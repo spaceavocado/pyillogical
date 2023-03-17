@@ -28,8 +28,10 @@ jobs:
         flake8 ./illogical ./tests
     - name: Test
       run: |
-        pytest .
+        pytest --cov ./illogical
     - name: Build
       run: |
         python -m build
         twine check dist/*
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
