@@ -4,7 +4,7 @@ import re
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from illogical.evaluable import Context, Evaluable, Primitive
+from illogical.evaluable import Context, Evaluable, Primitive, flatten_context
 
 _DATA_TYPE_RX = r"^.+\.\(([A-Z][a-z]+)\)$"
 _DATA_TYPE_TRIM_RX = r".\(([A-Z][a-z]+)\)$"
@@ -42,12 +42,13 @@ Matching regular expression patterns.
 class DataType(Enum):
     """Referenced value data type."""
 
-    UNDEFINED = 0
-    NUMBER = 1
-    INTEGER = 2
-    FLOAT = 3
-    STRING = 4
-    BOOLEAN = 5
+    UNSUPPORTED = 0
+    UNDEFINED = 1
+    NUMBER = 2
+    INTEGER = 3
+    FLOAT = 4
+    STRING = 5
+    BOOLEAN = 6
 
 
 _DATATYPE_KEYS = {
@@ -68,7 +69,7 @@ def get_data_type(address: str) -> DataType:
 
     data_type = _DATATYPE_KEYS.get(match.group(1))
     if data_type is None:
-        return DataType.UNDEFINED
+        return DataType.UNSUPPORTED
 
     return data_type
 
@@ -191,20 +192,23 @@ def to_boolean(val):
     return False
 
 
-def context_lookup(context: Context, path: str) -> Tuple[str, Primitive | None]:
+def context_lookup(context: Context, path: str) -> Tuple[bool, str, Primitive | None]:
     """Try to get a value from the context object based on the reference path."""
 
     match = re.search(_NESTED_REFERENCE_RX, path)
     while match:
         start, end = match.span()
-        _, val = context_lookup(context, match.groups(0)[0])
-        if val is None:
-            return (path, None)
+        found, _, val = context_lookup(context, match.groups(0)[0])
+        if not found:
+            return (False, path, None)
 
         path = path[0:start] + str(val) + path[end:]
         match = re.search(_NESTED_REFERENCE_RX, path)
 
-    return (path, context.get(path))
+    if path in context:
+        return (True, path, context.get(path))
+
+    return (False, path, None)
 
 
 _DATATYPE_HANDLERS = {
@@ -216,22 +220,23 @@ _DATATYPE_HANDLERS = {
 }
 
 
-def evaluate(context: Context, path: str, data_type: DataType) -> Tuple[str, Primitive]:
+def evaluate(
+    context: Context,
+    path: str,
+    data_type: DataType
+) -> Tuple[bool, str, Primitive]:
     """
     Evaluate the reference at given path from the context.
     Resolved value is typed, if data type is provided.
     """
-
-    resolved_path, value = context_lookup(context, path)
-
-    if value is None:
-        return (resolved_path, None)
+    context = flatten_context(context)
+    found, resolved_path, value = context_lookup(context, path)
 
     handler = _DATATYPE_HANDLERS.get(data_type)
-    if handler:
-        return (resolved_path, handler(value))
+    if value is not None and handler:
+        return (found, resolved_path, handler(value))
 
-    return (resolved_path, value)
+    return (found, resolved_path, value)
 
 
 def default_serialize_from(address: str) -> str:
@@ -263,14 +268,19 @@ class Reference(Evaluable):
         self.data_type = get_data_type(address)
         self.path = trim_data_type(address)
 
+        if self.data_type == DataType.UNSUPPORTED:
+            raise ValueError(f"unsupported type casting, {address}")
+
     def evaluate(self, context: Context):
-        _, res = evaluate(context, self.path, self.data_type)
+        context = flatten_context(context)
+        _, _, res = evaluate(context, self.path, self.data_type)
         return res
 
     def simplify(self, context: Context):
-        path, res = evaluate(context, self.path, self.data_type)
+        context = flatten_context(context)
+        found, path, res = evaluate(context, self.path, self.data_type)
 
-        if res is not None or is_ignored_path(
+        if found and not is_ignored_path(
             path, self.ignored_paths, self.ignored_path_rx
         ):
             return res

@@ -2,8 +2,9 @@
 
 from typing import Iterable
 
-from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
+from illogical.evaluable import Context, Evaluable, Evaluated, flatten_context
+from illogical.expression.logical.logical import (
+    InvalidLogicalExpression, InvalidLogicalExpressionOperand, Logical)
 from illogical.expression.logical.nor import Nor
 from illogical.expression.logical.not_exp import Not
 
@@ -28,16 +29,27 @@ class Xor(Logical):
         self.nor_symbol = nor_symbol
 
     def evaluate(self, context: Context) -> bool:
-        out = None
+        context = flatten_context(context)
+        xor = None
 
         for operand in self.operands:
             res = operand.evaluate(context)
-            if isinstance(res, bool) and res:
-                out = res if out is None else out ^ res
+            if not isinstance(res, bool):
+                raise InvalidLogicalExpressionOperand()
 
-        return out if out else False
+            if res is None:
+                xor = res
+                continue
+
+            if xor and res:
+                return False
+
+            xor = res if res else xor
+
+        return xor if xor else False
 
     def simplify(self, context: Context) -> Evaluated | Evaluable:
+        context = flatten_context(context)
         truthy = 0
         simplified = []
 
@@ -50,7 +62,7 @@ class Xor(Logical):
                     return False
                 continue
 
-            simplified.append(res)
+            simplified.append(res if isinstance(res, Evaluable) else operand)
 
         if len(simplified) == 0:
             return truthy == 1

@@ -2,7 +2,8 @@
 
 from typing import Iterable
 
-from illogical.evaluable import Context, Evaluable, is_evaluable
+from illogical.evaluable import (Context, Evaluable, flatten_context,
+                                 is_evaluable)
 
 EscapeCharacter = str
 r"""
@@ -53,10 +54,13 @@ class Collection(Evaluable):
         self.escaped_operators = escaped_operators
 
     def evaluate(self, context: Context):
+        context = flatten_context(context)
         return [item.evaluate(context) for item in self.items]
 
     def simplify(self, context: Context):
+        context = flatten_context(context)
         res = []
+
         for item in self.items:
             val = item.simplify(context)
             if is_evaluable(val):

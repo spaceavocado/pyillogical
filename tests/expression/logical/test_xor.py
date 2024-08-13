@@ -4,7 +4,7 @@
 import pytest
 
 from illogical.evaluable import is_evaluable
-from illogical.expression.logical.logical import InvalidLogicalExpression
+from illogical.expression.logical.logical import InvalidLogicalExpression, InvalidLogicalExpressionOperand
 from illogical.expression.logical.nor import Nor
 from illogical.expression.logical.not_exp import Not
 from illogical.expression.logical.xor import Xor
@@ -30,15 +30,30 @@ def test_constructor(operands, expected):
         # Truthy
         ([Value(True), Value(False)], True),
         ([Value(False), Value(True)], True),
+        ([Value(True), Value(False), Value(False)], True),
         ([Value(False), Value(True), Value(False)], True),
+        ([Value(False), Value(False), Value(True)], True),
         # Falsy
         ([Value(True), Value(True)], False),
         ([Value(False), Value(False)], False),
-        ([Value(False), Value(True), Value(True)], False),
+        ([Value(True), Value(True), Value(False)], False),
+        ([Value(True), Value(False), Value(True)], False),
+        ([Value(True), Value(True), Value(True)], False),
     ],
 )
 def test_evaluate(operands, expected):
     assert Xor(operands).evaluate({}) == expected
+
+@pytest.mark.parametrize(
+    "operands",
+    [
+        ([Value(1), Value(True)]),
+        ([Value(1), Value("bogus")]),
+    ],
+)
+def test_evaluate_invalid_operand(operands):
+    with pytest.raises(InvalidLogicalExpressionOperand):
+        Xor(operands).evaluate({})
 
 
 @pytest.mark.parametrize(
@@ -60,11 +75,12 @@ def test_evaluate(operands, expected):
             [Reference("Missing"), Reference("Missing")],
             Xor([Reference("Missing"), Reference("Missing")]),
         ),
+        ([Value(False), Reference("invalid")], Reference("invalid")),
     ],
 )
 def test_simplify(operands, expected):
     operand = Xor(operands)
-    simplified = operand.simplify({"RefA": True})
+    simplified = operand.simplify({"RefA": True, "invalid": 1})
 
     if is_evaluable(expected):
         assert str(simplified) == str(expected)

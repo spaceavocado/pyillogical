@@ -4,13 +4,8 @@ evaluate an expression in data context, and provide access to a text form of the
 given expression.
 """
 
-from illogical.evaluable import (
-    Context,
-    Evaluable,
-    Evaluated,
-    Expression,
-    flatten_context,
-)
+from illogical.evaluable import (Context, Evaluable, Evaluated, Expression,
+                                 flatten_context)
 from illogical.parser.parse import Options, parse
 
 

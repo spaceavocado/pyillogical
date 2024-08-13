@@ -38,6 +38,7 @@ def example_context():
             "refF": "A",
             "refG": "1",
             "refH": "1.1",
+            "refX": None,
         }
     )
 
@@ -69,7 +70,7 @@ def test_default_serialize_to(operand, expected):
     [
         ("ref", DataType.UNDEFINED),
         ("ref.(X)", DataType.UNDEFINED),
-        ("ref.(Bogus)", DataType.UNDEFINED),
+        ("ref.(Bogus)", DataType.UNSUPPORTED),
         ("ref.(String)", DataType.STRING),
         ("ref.(Number)", DataType.NUMBER),
         ("ref.(Integer)", DataType.INTEGER),
@@ -101,7 +102,6 @@ def test_is_ignored_path(path, ignored_paths, ignored_path_rx, expected):
         ("ref", "ref"),
         ("ref.(X)", "ref.(X)"),
         ("ref.(String)", "ref"),
-        ("ref.(Nonsense)", "ref"),
     ],
 )
 def test_trim_data_type(address, expected):
@@ -190,28 +190,30 @@ def test_to_boolean(val, expected):
 
 
 @pytest.mark.parametrize(
-    "path, expected_path, expected_value",
+    "path, expected_found, expected_path, expected_value",
     [
-        ("UNDEFINED", "UNDEFINED", None),
-        ("refA", "refA", 1),
-        ("refB.refB1", "refB.refB1", 2),
-        ("refB.{refC}", "refB.refB1", 2),
-        ("refB.{UNDEFINED}", "refB.{UNDEFINED}", None),
-        ("refB.{refB.refB2}", "refB.refB1", 2),
-        ("refB.{refB.{refD}}", "refB.refB1", 2),
-        ("refE[0]", "refE[0]", 1),
-        ("refE[2]", "refE[2]", None),
-        ("refE[1][0]", "refE[1][0]", 2),
-        ("refE[1][3]", "refE[1][3]", None),
-        ("refE[{refA}][0]", "refE[1][0]", 2),
-        ("refE[{refA}][{refB.refB1}]", "refE[1][2]", 4),
-        ("ref{refF}", "refA", 1),
-        ("ref{UNDEFINED}", "ref{UNDEFINED}", None),
+        ("UNDEFINED", False, "UNDEFINED", None),
+        ("refA", True, "refA", 1),
+        ("refB.refB1", True, "refB.refB1", 2),
+        ("refB.{refC}", True, "refB.refB1", 2),
+        ("refB.{UNDEFINED}", False, "refB.{UNDEFINED}", None),
+        ("refB.{refB.refB2}", True, "refB.refB1", 2),
+        ("refB.{refB.{refD}}", True, "refB.refB1", 2),
+        ("refE[0]", True, "refE[0]", 1),
+        ("refE[2]", False, "refE[2]", None),
+        ("refE[1][0]", True, "refE[1][0]", 2),
+        ("refE[1][3]", False, "refE[1][3]", None),
+        ("refE[{refA}][0]", True, "refE[1][0]", 2),
+        ("refE[{refA}][{refB.refB1}]", True, "refE[1][2]", 4),
+        ("ref{refF}", True, "refA", 1),
+        ("ref{UNDEFINED}", False, "ref{UNDEFINED}", None),
+        ("refX", True, "refX", None),
     ],
 )
-def test_context_lookup(path, expected_path, expected_value, example_context):
-    path, value = context_lookup(example_context, path)
+def test_context_lookup(path, expected_found, expected_path, expected_value, example_context):
+    found, path, value = context_lookup(example_context, path)
 
+    assert found == expected_found
     assert path == expected_path
     assert value == expected_value
 
@@ -230,7 +232,7 @@ def test_context_lookup(path, expected_path, expected_value, example_context):
     ],
 )
 def test_evaluate(path, data_type, expected, example_context):
-    _, result = evaluate(example_context, path, data_type)
+    _, _, result = evaluate(example_context, path, data_type)
 
     assert result == expected
 
@@ -253,11 +255,11 @@ def test_serialize(address, expected):
 @pytest.mark.parametrize(
     "address, expected ",
     [
-        ("refJ", Reference("refJ")),
-        ("ignored", None),
         ("refA", 1),
-        ("refB.{refJ}", Reference("refB.{refJ}")),
-        ("refC.{refJ}", None),
+        ("ignored", Reference("ignored")),
+        ("refB.{refB1}", Reference("refB.{refB1}")),
+        ("ref", Reference("ref")),
+        ("refX", None),
     ],
 )
 def test_simplify(address, expected, example_context):
@@ -292,3 +294,8 @@ def test___srt__(address, expected):
 )
 def test___repr__(address, expected):
     assert repr(Reference(address)) == expected
+
+
+def test_unsupported_data_type():
+    with pytest.raises(ValueError):
+        Reference("address.(Unsupported)")

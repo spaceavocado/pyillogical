@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Iterable, NewType, Protocol
+from typing import Any, Iterable, NewType, Protocol, runtime_checkable
 
 Context = dict[str, Any]
 Primitive = str | int | float | bool | None
@@ -10,6 +10,10 @@ Evaluated = Primitive | Iterable["Evaluated"]
 Expression = Evaluated
 
 Kind = NewType("Kind", str)
+
+
+class FlattenContext(dict[str, Any]):
+    """Flatten context, 1-dimensional dict"""
 
 
 def is_primitive(subject) -> bool:
@@ -30,6 +34,7 @@ def is_evaluable(subject) -> bool:
     )
 
 
+@runtime_checkable
 class Evaluable(Protocol):
     """Evaluable expression."""
 
@@ -46,7 +51,7 @@ class Evaluable(Protocol):
         """Get statement from of expression"""
 
 
-def flatten_context(context: Context) -> Context:
+def flatten_context(context: Context | FlattenContext) -> FlattenContext:
     """
     Flatten context into a map of map[property path]value.
 
@@ -73,12 +78,17 @@ def flatten_context(context: Context) -> Context:
     }
     """
 
-    res = {}
+    if isinstance(context, FlattenContext):
+        return context
+
+    res = FlattenContext()
 
     def join_path(left: str, right: str) -> str:
         return right if len(left) == 0 else f"{left}.{right}"
 
     def lookup(subject, path: str):
+        if subject is None:
+            res[path] = None
         if isinstance(subject, (int, float, str, bool)):
             res[path] = subject
         if isinstance(subject, dict):

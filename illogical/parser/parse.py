@@ -4,7 +4,8 @@
 
 from typing import Iterable
 
-from illogical.evaluable import Evaluable, Evaluated, Expression, Kind, is_primitive
+from illogical.evaluable import (Evaluable, Evaluated, Expression, Kind,
+                                 is_primitive)
 from illogical.expression.comparison.comparison import Comparison
 from illogical.expression.comparison.eq import Eq
 from illogical.expression.comparison.ge import Ge
@@ -26,15 +27,10 @@ from illogical.expression.logical.not_exp import Not
 from illogical.expression.logical.or_exp import Or
 from illogical.expression.logical.xor import Xor
 from illogical.operand.collection import Collection
-from illogical.operand.reference import (
-    IgnoredPaths,
-    IgnoredPathsRx,
-    Reference,
-    SerializeFrom,
-    SerializeTo,
-    default_serialize_from,
-    default_serialize_to,
-)
+from illogical.operand.reference import (IgnoredPaths, IgnoredPathsRx,
+                                         Reference, SerializeFrom, SerializeTo,
+                                         default_serialize_from,
+                                         default_serialize_to)
 from illogical.operand.value import Value
 
 
