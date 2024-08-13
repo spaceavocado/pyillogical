@@ -10,6 +10,7 @@ A micro conditional engine used to parse the logical and comparison expressions,
 Other implementations:
 - [TS/JS](https://github.com/spaceavocado/illogical)
 - [GO](https://github.com/spaceavocado/goillogical)
+- [C#](https://github.com/spaceavocado/cillogical)
 
 ## About
 
