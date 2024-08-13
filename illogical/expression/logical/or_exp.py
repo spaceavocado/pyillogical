@@ -4,8 +4,9 @@
 
 from typing import Iterable
 
-from illogical.evaluable import Context, Evaluable, Evaluated
-from illogical.expression.logical.logical import InvalidLogicalExpression, Logical
+from illogical.evaluable import Context, Evaluable, Evaluated, flatten_context
+from illogical.expression.logical.logical import (
+    InvalidLogicalExpression, InvalidLogicalExpressionOperand, Logical)
 
 
 class Or(Logical):
@@ -18,14 +19,19 @@ class Or(Logical):
         super().__init__("OR", symbol, *operands)
 
     def evaluate(self, context: Context) -> bool:
+        context = flatten_context(context)
+
         for operand in self.operands:
             res = operand.evaluate(context)
-            if isinstance(res, bool) and res:
+            if not isinstance(res, bool):
+                raise InvalidLogicalExpressionOperand()
+            elif res:
                 return True
 
         return False
 
     def simplify(self, context: Context) -> Evaluated | Evaluable:
+        context = flatten_context(context)
         simplified = []
 
         for operand in self.operands:
@@ -35,7 +41,7 @@ class Or(Logical):
                     return True
                 continue
 
-            simplified.append(res)
+            simplified.append(res if isinstance(res, Evaluable) else operand)
 
         if len(simplified) == 0:
             return False

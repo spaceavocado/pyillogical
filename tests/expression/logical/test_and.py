@@ -5,7 +5,7 @@ import pytest
 
 from illogical.evaluable import is_evaluable
 from illogical.expression.logical.and_exp import And
-from illogical.expression.logical.logical import InvalidLogicalExpression
+from illogical.expression.logical.logical import InvalidLogicalExpression, InvalidLogicalExpressionOperand
 from illogical.operand.reference import Reference
 from illogical.operand.value import Value
 
@@ -39,6 +39,19 @@ def test_evaluate(operands, expected):
 
 
 @pytest.mark.parametrize(
+    "operands",
+    [
+        ([Value(True), Value(1)]),
+        ([Value(1), Value(True)]),
+        ([Value(1), Value("bogus")]),
+    ],
+)
+def test_evaluate_invalid_operand(operands):
+    with pytest.raises(InvalidLogicalExpressionOperand):
+        And(operands).evaluate({})
+
+
+@pytest.mark.parametrize(
     "operands, expected",
     [
         ([Value(True), Value(True)], True),
@@ -49,11 +62,12 @@ def test_evaluate(operands, expected):
             [Reference("Missing"), Reference("Missing")],
             And([Reference("Missing"), Reference("Missing")]),
         ),
+        ([Reference("invalid"), Value(True)], Reference("invalid")),
     ],
 )
 def test_simplify(operands, expected):
     operand = And(operands)
-    simplified = operand.simplify({"RefA": True})
+    simplified = operand.simplify({"RefA": True, "invalid": 1})
 
     if is_evaluable(expected):
         assert str(simplified) == str(expected)

@@ -3,7 +3,7 @@
 
 import pytest
 
-from illogical.evaluable import flatten_context, is_evaluable, is_primitive
+from illogical.evaluable import FlattenContext, flatten_context, is_evaluable, is_primitive
 from illogical.expression.logical.and_exp import And
 from illogical.operand.value import Value
 
@@ -47,6 +47,7 @@ def test_is_evaluable(subject, expected):
     "context, expected",
     [
         ({"a": 1}, {"a": 1}),
+        ({"a": None}, {"a": None}),
         ({"a": 1, "b": {"c": 5, "d": True}}, {"a": 1, "b.c": 5, "b.d": True}),
         ({"a": 1, "b": [1, 2, 3]}, {"a": 1, "b[0]": 1, "b[1]": 2, "b[2]": 3}),
         (
@@ -57,3 +58,10 @@ def test_is_evaluable(subject, expected):
 )
 def test_flatten_context(context, expected):
     assert flatten_context(context) == expected
+
+
+def test_flatten_context_prevent_reprocessing():
+    context = FlattenContext()
+    context["a"] = 1
+    context["b"] = { "b1": 2 }
+    assert flatten_context(context) == {"a": 1, "b": { "b1": 2 }}

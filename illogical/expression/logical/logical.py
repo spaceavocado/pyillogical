@@ -9,6 +9,10 @@ class InvalidLogicalExpression(Exception):
     """Non unary logical expression must have at least 2 operands"""
 
 
+class InvalidLogicalExpressionOperand(Exception):
+    """Logical operands must be evaluated as boolean values"""
+
+
 class Logical(Evaluable):
     """Logical expression."""
 
