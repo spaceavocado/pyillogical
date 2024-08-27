@@ -5,12 +5,13 @@ A micro conditional engine used to parse the logical and comparison expressions,
 [![codecov](https://codecov.io/gh/spaceavocado/pyillogical/branch/master/graph/badge.svg?token=NC8CX62BMC)](https://codecov.io/gh/spaceavocado/pyillogical)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)​
 
-> Revision: Mar 10, 2023.
+> Revision: August 26, 2024.
 
 Other implementations:
 - [TS/JS](https://github.com/spaceavocado/illogical)
 - [GO](https://github.com/spaceavocado/goillogical)
 - [C#](https://github.com/spaceavocado/cillogical)
+- [Java](https://github.com/spaceavocado/jillogical)
 
 ## About
 
