@@ -12,6 +12,7 @@ Other implementations:
 - [GO](https://github.com/spaceavocado/goillogical)
 - [C#](https://github.com/spaceavocado/cillogical)
 - [Java](https://github.com/spaceavocado/jillogical)
+- [Odin](https://github.com/spaceavocado/oillogical)
 
 ## About
 
